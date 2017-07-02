@@ -4,10 +4,19 @@
   "description": "the server project",
   "main": "index.js",
   "scripts": {
+    "jn": "jasmine-node",
+    "start": "node index.js",
     "ready": "git add . && git commit -m ",
-    "postready":"git push origin master",
+    "postready": "git push origin master",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "socket.io": "^2.0.3"
+  },
+  "devDependencies": {
+    "jasmine-core": "^2.6.4",
+    "jasmine-node": "^1.14.5"
+  }
 }
