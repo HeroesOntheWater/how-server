@@ -2,6 +2,6 @@ General:
     interval: 10
 
 makesimple-98pi4:
-    # output_name: "ex1"
+    output_name: "ex1"
     interval: 5
     secret_key: thisisjustasample89234jh834
