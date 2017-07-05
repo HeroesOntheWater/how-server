@@ -27,19 +27,36 @@ class FirebaseBackupper{
 
   // func(firebase_endpoint, secret_key, output_name)
   makeBackup(config, fbRef){
-    let pathName = "";
+    let path = "";
     let url = "";
     if(Object.keys(config).length === 0){
       console.log('Not enough arguments in '+ fbRef+"\'s config");
       return;
     }
 
-    pathName = (config.hasOwnProperty('output_name'))?config['output_name']:fbRef;
+    path = 'backups/' + (config.hasOwnProperty('output_name'))?config['output_name']:fbRef;
     url = `https://${fbRef}.firebaseio.com/.json?format=export&auth=${config['secret_key']}`;
     request(url, (err, resp, body)=>{
-      console.log(body);
+      if(preparePath(path)){
+        fs.writeFileSync(moment().format() + '.json', body);
+      }
     })
 
+  }
+
+  //preparePath would be "saveFile", but passing the body would be time consuming on large firebase dbs.
+  preparePath(path){
+    if(fs.existsSync(path)) return true;
+
+    path.split('/')
+      .reduce((accumulator, currentValue)=>{
+        if(!fs.existsSync(accumulator)){
+          fs.mkdirSync(accumulator);
+        }
+        return accumulator + '/' + currentValue;
+      });
+
+      return true;
   }
 
   //the backup program's runner 
