@@ -27,6 +27,7 @@ class FirebaseBackupper{
 
   // func(firebase_endpoint, secret_key, output_name)
   makeBackup(config, fbRef){
+    const pathPrefix = 'backups/';
     let path = "";
     let url = "";
     if(Object.keys(config).length === 0){
@@ -34,11 +35,16 @@ class FirebaseBackupper{
       return;
     }
 
-    path = 'backups/' + (config.hasOwnProperty('output_name'))?config['output_name']:fbRef;
+    path = (config.hasOwnProperty('output_name'))?config['output_name']:fbRef;
+    path = pathPrefix + path;
     url = `https://${fbRef}.firebaseio.com/.json?format=export&auth=${config['secret_key']}`;
     request(url, (err, resp, body)=>{
-      if(preparePath(path)){
-        fs.writeFileSync(moment().format() + '.json', body);
+      if(this.preparePath(path)){
+        
+        //fd is the file descriptor
+        let fd = fs.openSync(path + '/' + moment().format() + '.json', 'w+');
+        fs.writeFileSync(path + '/' + moment().format() + '.json', body);
+        fs.closeSync(fd);
       }
     })
 
@@ -48,12 +54,14 @@ class FirebaseBackupper{
   preparePath(path){
     if(fs.existsSync(path)) return true;
 
+    let pathBuilder ='.';
     path.split('/')
-      .reduce((accumulator, currentValue)=>{
-        if(!fs.existsSync(accumulator)){
-          fs.mkdirSync(accumulator);
+      .forEach((v)=>{
+        pathBuilder += '/' + v;
+
+        if(!fs.existsSync(pathBuilder)){
+          fs.mkdirSync(pathBuilder);
         }
-        return accumulator + '/' + currentValue;
       });
 
       return true;
@@ -83,13 +91,13 @@ class FirebaseBackupper{
       let cron_value = (this.yaml[me].hasOwnProperty('interval'))? this.yaml[me]['interval'] : this.backupInterval;
 
       // //run cronjobs
-      // hi.push(new cron.CronJob(cron_value, ()=>{ //arrow function is important here due to usage of the this keyword
+      hi.push(new cron.CronJob(cron_value, ()=>{ //arrow function is important here due to usage of the this keyword
         this.makeBackup(this.yaml[me], me);
-      // },
-      // null,
-      // true, //true says to run the job immediately
-      // null // Timezone: null tells the library to take timezone of node server
-      // ));
+      },
+      null,
+      true, //true says to run the job immediately
+      null // Timezone: null tells the library to take timezone of node server
+      ));
 
 
     }
