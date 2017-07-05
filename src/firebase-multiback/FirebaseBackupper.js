@@ -1,6 +1,8 @@
 'use strict'
 const fs = require('fs');
 const cron = require('cron');
+const moment = require('moment');
+const request = require('request');
 
 //get, set, and static are all available in classes.
 class FirebaseBackupper{
@@ -21,6 +23,23 @@ class FirebaseBackupper{
       //TODO: implement logger and log this information
       console.log('No general interval set. Moving on..');
     }
+  }
+
+  // func(firebase_endpoint, secret_key, output_name)
+  makeBackup(config, fbRef){
+    let pathName = "";
+    let url = "";
+    if(Object.keys(config).length === 0){
+      console.log('Not enough arguments in '+ fbRef+"\'s config");
+      return;
+    }
+
+    pathName = (config.hasOwnProperty('output_name'))?config['output_name']:fbRef;
+    url = `https://${fbRef}.firebaseio.com/.json?format=export&auth=${config['secret_key']}`;
+    request(url, (err, resp, body)=>{
+      console.log(body);
+    })
+
   }
 
   //the backup program's runner 
@@ -44,23 +63,21 @@ class FirebaseBackupper{
         continue;
       }
 
-      let temp_interval = (this.yaml[me].hasOwnProperty('interval'))? this.yaml[me]['interval'] : this.backupInterval;
+      let cron_value = (this.yaml[me].hasOwnProperty('interval'))? this.yaml[me]['interval'] : this.backupInterval;
 
-      //run cronjobs
-      hi.push(new cron.CronJob(temp_interval, ()=>{
-        console.log('inside cron job');
-      },
-      null,
-      true, //true says to run the job immediately
-      null // Timezone: null tells the library to take timezone of node server
-      ));
+      // //run cronjobs
+      // hi.push(new cron.CronJob(cron_value, ()=>{ //arrow function is important here due to usage of the this keyword
+        this.makeBackup(this.yaml[me], me);
+      // },
+      // null,
+      // true, //true says to run the job immediately
+      // null // Timezone: null tells the library to take timezone of node server
+      // ));
 
 
     }
-    console.log(hi);
+    return hi;
   }
-
-  // func(firebase_endpoint, secret_key, output_name)
 
   get printYaml ()  {console.log(this.yaml);}
 }

@@ -1,7 +1,0 @@
-General:
-    interval: "* * * * *"
-
-makesimple-98pi4:
-    # output_name: "ex1"
-    interval: "* * * * *"
-    secret_key: thisisjustasample89234jh834
