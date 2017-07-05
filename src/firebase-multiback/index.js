@@ -7,7 +7,11 @@ const fs = require('fs');
 try{
   const firebaseSpec = yaml.safeLoad(fs.readFileSync('./prac.yaml', 'utf-8'));
   console.log(firebaseSpec);
-  new require('./FirebaseBackupper');
+
+  var f = require('./FirebaseBackupper.js');
+  var f_instance = new f(firebaseSpec, 10);
+  // f_instance.getYaml();
+
 } catch(e){
   console.log(e);
 } 
