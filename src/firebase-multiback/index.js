@@ -14,8 +14,16 @@ try {
     });
 
     app.get('/get', function(req, res){
-      const backup = fs.readFileSync('./backups/herosonthewatertest2/1499305621154.json', 'utf-8');
-      res.send(JSON.stringify(backup));
+
+      var path = './backups/herosonthewatertest2/1499305621154.json';
+      if(fs.existsSync(path)){
+        res.download(path);
+      } else {
+        res.send('no path');
+      }
+      
+      //const backup = fs.readFileSync('./backups/herosonthewatertest2/1499305621154.json', 'utf-8');
+      //res.send(JSON.parse(backup));
     });
 
     app.listen(8080, function() {
