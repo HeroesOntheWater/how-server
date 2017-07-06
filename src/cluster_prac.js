@@ -1,5 +1,4 @@
 // console.log(require('../folder-1').saysmom);
-
 var cluster = require('cluster'),
 	factorial = function factorial(num) {
 		if(num === 1 || num === 0) return 1;
