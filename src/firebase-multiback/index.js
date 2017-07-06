@@ -21,7 +21,6 @@ try {
       } else {
         res.send('no path');
       }
-      
       //const backup = fs.readFileSync('./backups/herosonthewatertest2/1499305621154.json', 'utf-8');
       //res.send(JSON.parse(backup));
     });

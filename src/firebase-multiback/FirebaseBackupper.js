@@ -97,13 +97,13 @@ class FirebaseBackupper {
             let cron_value = (this.yaml[me].hasOwnProperty('interval')) ? this.yaml[me]['interval'] : this.backupInterval;
 
             // //run cronjobs
-            /*hi.push(new cron.CronJob(cron_value, () => { //arrow function is important here due to usage of the this keyword*/
+            hi.push(new cron.CronJob(cron_value, () => { //arrow function is important here due to usage of the this keyword
                     this.makeBackup(this.yaml[me], me);
-              /*  },
+                  },
                 null,
                 true, //true says to run the job immediately
                 null // Timezone: null tells the library to take timezone of node server
-            ));*/
+            ));
 
 
         }
