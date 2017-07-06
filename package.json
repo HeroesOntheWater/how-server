@@ -6,8 +6,8 @@
   "scripts": {
     "jn": "jasmine-node",
     "start": "node index.js",
-    "ready": "git add . && git commit -m ",
-    "postready": "git push origin master",
+    "ready": "git config push.default current && git add . && git commit -m ",
+    "postready": "git push -u",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
