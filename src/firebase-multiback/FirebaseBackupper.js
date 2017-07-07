@@ -25,7 +25,7 @@ class FirebaseBackupper{
     }
   }
 
-  // func(firebase_endpoint, secret_key, output_name)
+  // func(firebase_endpoint, secret_key, version)
   makeBackup(config, fbRef){
     const pathPrefix = 'backups/';
     let path = "";
@@ -35,7 +35,7 @@ class FirebaseBackupper{
       return;
     }
 
-    path = (config.hasOwnProperty('output_name'))?config['output_name']:fbRef;
+    path = (config.hasOwnProperty('version'))?config['version']:fbRef;
     path = pathPrefix + path;
     url = `https://${fbRef}.firebaseio.com/.json?format=export&auth=${config['secret_key']}`;
     request(url, (err, resp, body)=>{
