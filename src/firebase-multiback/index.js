@@ -14,37 +14,33 @@ try {
     });
 
     app.get('/get', function(req, res){
+
       var path = './backups/herosonthewatertest2/';
       var begin = req.query.fromDate;
       var end = req.query.toDate;
       var returned_arr = [];
+      var file_names = fs.readdirSync(path);
 
-      fs.readdir(path, function(err, file_names){
+      if(typeof begin == 'undefined' && typeof end != 'undefined'){
+        var index = 0;
+        while(index < file_names.length && parseInt(file_names[index].substring(0, file_names[index].length-5)) <= end){
+          index++;
+        }
+        returned_arr = file_names.splice(0, index);
+      } else if (typeof begin != 'undefined' && typeof end == 'undefined'){
+        var index = file_names.length - 1;
+        while(index > 0 && parseInt(file_names[index].substring(0, file_names[index].length-5)) > begin){
+          index--;
+        }
+        returned_arr = file_names.splice(index, file_names.length - index);
+      } else {
         returned_arr = file_names.filter(function(name){
           name = name.substring(0, name.length - 5);
           return parseInt(name) > begin && parseInt(name) < end;
-        })
-
-        res.send(returned_arr);
-      })
-    /*  var basePath = './backups/herosonthewatertest2/';
-      var backupArr = [];
-      for(var  i = 1499305621154; i < 1499305742411; i++) {
-        path = basePath + i + ".json";
-        if(fs.existsSync(path)){
-          backupArr.push(path);
-        }
+        });
       }
-      res.send(backupArr);*/
 
-      /*path = './backups/herosonthewatertest2/1499305621154.json';
-      if(fs.existsSync(path)){
-        res.download(path);
-      } else {
-        res.send('no path');
-      }*/
-      //const backup = fs.readFileSync('./backups/herosonthewatertest2/1499305621154.json', 'utf-8');
-      //res.send(JSON.parse(backup));
+      res.send(returned_arr);
     });
 
     app.listen(8080, function() {
