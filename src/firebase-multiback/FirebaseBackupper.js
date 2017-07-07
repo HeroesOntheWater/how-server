@@ -40,7 +40,6 @@ class FirebaseBackupper {
         url = `https://${fbRef}.firebaseio.com/.json?format=export&auth=${config['secret_key']}`;
         request(url, (err, resp, body) => {
             if (this.preparePath(path)) {
-                console.log('yes');
                 let timestamp = new Date().getTime();
                 if (/^win/.test(process.platform)) { //windows patch
                     execSync('type NUL > ' + path + '/' + timestamp + '.json');
@@ -97,13 +96,13 @@ class FirebaseBackupper {
             let cron_value = (this.yaml[me].hasOwnProperty('interval')) ? this.yaml[me]['interval'] : this.backupInterval;
 
             // //run cronjobs
-            hi.push(new cron.CronJob(cron_value, () => { //arrow function is important here due to usage of the this keyword
+            /*hi.push(new cron.CronJob(cron_value, () => { //arrow function is important here due to usage of the this keyword*/
                     this.makeBackup(this.yaml[me], me);
-                  },
+              /*    },
                 null,
                 true, //true says to run the job immediately
                 null // Timezone: null tells the library to take timezone of node server
-            ));
+            ));*/
 
 
         }
