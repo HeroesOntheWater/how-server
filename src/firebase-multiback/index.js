@@ -22,22 +22,34 @@ try {
       var file_names = fs.readdirSync(path);
 
       if(typeof begin == 'undefined' && typeof end != 'undefined'){
+
         var index = 0;
         while(index < file_names.length && parseInt(file_names[index].substring(0, file_names[index].length-5)) <= end){
           index++;
         }
         returned_arr = file_names.splice(0, index);
+
       } else if (typeof begin != 'undefined' && typeof end == 'undefined'){
+
         var index = file_names.length - 1;
         while(index > 0 && parseInt(file_names[index].substring(0, file_names[index].length-5)) > begin){
           index--;
         }
         returned_arr = file_names.splice(index, file_names.length - index);
+
       } else {
-        returned_arr = file_names.filter(function(name){
-          name = name.substring(0, name.length - 5);
-          return parseInt(name) > begin && parseInt(name) < end;
-        });
+
+        var beginIndex = 0;
+        while(beginIndex < file_names.length && parseInt(file_names[beginIndex].substring(0, file_names[beginIndex].length-5)) < begin){
+          beginIndex++;
+        }
+
+        var endIndex = file_names.length - 1;
+        while(endIndex > 0 && parseInt(file_names[endIndex].substring(0, file_names[endIndex].length-5)) > end){
+          endIndex--;
+        }
+
+        returned_arr = file_names.splice(beginIndex, endIndex - beginIndex + 1);
       }
 
       res.send(returned_arr);
