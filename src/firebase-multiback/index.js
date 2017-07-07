@@ -23,19 +23,23 @@ try {
 
       if(typeof begin == 'undefined' && typeof end != 'undefined'){
         var index = 0;
-        while(index < file_names.length && parseInt(file_names[index].substring(0,file_names[index].length-5)) < end){
+        while(index < file_names.length && parseInt(file_names[index].substring(0, file_names[index].length-5)) <= end){
           index++;
         }
         returned_arr = file_names.splice(0, index);
       } else if (typeof begin != 'undefined' && typeof end == 'undefined'){
-        console.log("to end");
+        var index = file_names.length - 1;
+        while(index > 0 && parseInt(file_names[index].substring(0, file_names[index].length-5)) > begin){
+          index--;
+        }
+        returned_arr = file_names.splice(index, file_names.length - index);
       } else {
         returned_arr = file_names.filter(function(name){
           name = name.substring(0, name.length - 5);
           return parseInt(name) > begin && parseInt(name) < end;
         });
       }
-      
+
       res.send(returned_arr);
     });
 
