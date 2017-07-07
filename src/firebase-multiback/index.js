@@ -1,7 +1,7 @@
 const yaml = require('js-yaml');
 const fs = require('fs');
 const express = require('express');
-var app = express();
+const app = express();
 
 //Get document, or throw exception on error
 try {
@@ -14,13 +14,35 @@ try {
     });
 
     app.get('/get', function(req, res){
+      var path = './backups/herosonthewatertest2/';
+      var begin = req.query.fromDate;
+      var end = req.query.toDate;
+      var returned_arr = [];
 
-      var path = './backups/herosonthewatertest2/1499305621154.json';
+      fs.readdir(path, function(err, file_names){
+        returned_arr = file_names.filter(function(name){
+          name = name.substring(0, name.length - 5);
+          return parseInt(name) > begin && parseInt(name) < end;
+        })
+
+        res.send(returned_arr);
+      })
+    /*  var basePath = './backups/herosonthewatertest2/';
+      var backupArr = [];
+      for(var  i = 1499305621154; i < 1499305742411; i++) {
+        path = basePath + i + ".json";
+        if(fs.existsSync(path)){
+          backupArr.push(path);
+        }
+      }
+      res.send(backupArr);*/
+
+      /*path = './backups/herosonthewatertest2/1499305621154.json';
       if(fs.existsSync(path)){
         res.download(path);
       } else {
         res.send('no path');
-      }
+      }*/
       //const backup = fs.readFileSync('./backups/herosonthewatertest2/1499305621154.json', 'utf-8');
       //res.send(JSON.parse(backup));
     });
