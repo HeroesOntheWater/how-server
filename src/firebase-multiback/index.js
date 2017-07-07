@@ -13,10 +13,10 @@ try {
       res.send('Hello!');
     });
 
-    app.get('/get/:begin/:end', function(req, res){
+    app.get('/get', function(req, res){
       var path = './backups/herosonthewatertest2/';
-      var begin = req.params.begin;
-      var end = req.params.end;
+      var begin = req.query.fromDate;
+      var end = req.query.toDate;
       var returned_arr = [];
 
       fs.readdir(path, function(err, file_names){
@@ -24,10 +24,8 @@ try {
           name = name.substring(0, name.length - 5);
           return parseInt(name) > begin && parseInt(name) < end;
         })
-        
-        res.send(returned_arr);
-        //res.send(file_names[0].substring(0, file_names[0].length-5));
 
+        res.send(returned_arr);
       })
     /*  var basePath = './backups/herosonthewatertest2/';
       var backupArr = [];
