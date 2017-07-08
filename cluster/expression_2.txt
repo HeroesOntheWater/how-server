@@ -1,0 +1,1 @@
+{github_link:"", local_path:"", command_set:"kill", app_name:"./testapp"}

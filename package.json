@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.17.2",
     "cron": "^1.2.1",
     "express": "^4.15.3",
     "js-yaml": "^3.8.4",
