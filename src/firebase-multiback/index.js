@@ -52,6 +52,10 @@ try {
         returned_arr = file_names.splice(beginIndex, endIndex - beginIndex + 1);
       }
 
+      for(var i = 0; i < returned_arr.length; i++){
+        returned_arr[i] = returned_arr[i].substring(0, returned_arr[i].length - 5);
+      }
+
       res.send(returned_arr);
     });
 

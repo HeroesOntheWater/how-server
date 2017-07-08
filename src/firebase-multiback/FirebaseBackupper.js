@@ -97,7 +97,7 @@ class FirebaseBackupper {
 
             // //run cronjobs
             /*hi.push(new cron.CronJob(cron_value, () => { //arrow function is important here due to usage of the this keyword*/
-                    this.makeBackup(this.yaml[me], me);
+                /*    this.makeBackup(this.yaml[me], me);*/
               /*    },
                 null,
                 true, //true says to run the job immediately
