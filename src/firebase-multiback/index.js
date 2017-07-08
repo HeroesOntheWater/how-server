@@ -15,13 +15,16 @@ try {
 
     app.get('/backup', function(req, res){
 
-      var path = './backups/' + req.query.path;
-      var begin = req.query.fromDate || '';
-      var end = req.query.toDate || '';
+      // retrieval of correct timestamps
       var returned_arr = [];
-      var timestamp;
-      var file_names_arr = fs.readdirSync(path);
       var fileName;
+      var timestamp;
+
+      // query parameters
+      var path = './backups/' + req.query.path;
+      var file_names_arr = fs.readdirSync(path);
+      var begin = req.query.fromDate ||  parseInt(file_names_arr[0].substring(0, file_names_arr[0].length-5));
+      var end = req.query.toDate || '';
 
       for(var i = 0; i < file_names_arr.length; i++){
         fileName = file_names_arr[i];
