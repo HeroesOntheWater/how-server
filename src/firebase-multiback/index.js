@@ -13,7 +13,7 @@ try {
       res.send('Hello!');
     });
 
-    app.get('/get', function(req, res){
+    app.get('/backup', function(req, res){
 
       var path = './backups/herosonthewatertest2/';
       var begin = req.query.fromDate;
