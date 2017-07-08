@@ -15,45 +15,27 @@ try {
 
     app.get('/backup', function(req, res){
 
-      var path = './backups/herosonthewatertest2/';
-      var begin = req.query.fromDate;
-      var end = req.query.toDate;
+      var path = './backups/' + req.query.path;
+      var begin = req.query.fromDate || '';
+      var end = req.query.toDate || '';
       var returned_arr = [];
-      var file_names = fs.readdirSync(path);
+      var timestamp;
+      var file_names_arr = fs.readdirSync(path);
+      var fileName;
 
-      if(typeof begin == 'undefined' && typeof end != 'undefined'){
+      for(var i = 0; i < file_names_arr.length; i++){
+        fileName = file_names_arr[i];
+        timestamp = parseInt(fileName.substring(0, fileName.length-5));
 
-        var index = 0;
-        while(index < file_names.length && parseInt(file_names[index].substring(0, file_names[index].length-5)) <= end){
-          index++;
-        }
-        returned_arr = file_names.splice(0, index);
-
-      } else if (typeof begin != 'undefined' && typeof end == 'undefined'){
-
-        var index = file_names.length - 1;
-        while(index > 0 && parseInt(file_names[index].substring(0, file_names[index].length-5)) > begin){
-          index--;
-        }
-        returned_arr = file_names.splice(index, file_names.length - index);
-
-      } else {
-
-        var beginIndex = 0;
-        while(beginIndex < file_names.length && parseInt(file_names[beginIndex].substring(0, file_names[beginIndex].length-5)) < begin){
-          beginIndex++;
+        // check if timestamp is within the range specified
+        if (timestamp >= begin && (timestamp <= end || end == '')){
+          returned_arr.push(timestamp);
         }
 
-        var endIndex = file_names.length - 1;
-        while(endIndex > 0 && parseInt(file_names[endIndex].substring(0, file_names[endIndex].length-5)) > end){
-          endIndex--;
+        // break loop if timestamp exceeds end specified
+        if(timestamp > end && end != ''){
+          break;
         }
-
-        returned_arr = file_names.splice(beginIndex, endIndex - beginIndex + 1);
-      }
-
-      for(var i = 0; i < returned_arr.length; i++){
-        returned_arr[i] = returned_arr[i].substring(0, returned_arr[i].length - 5);
       }
 
       res.send(returned_arr);
