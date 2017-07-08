@@ -10,7 +10,8 @@ try {
     var f_instance = new FirebaseBackupper(firebaseSpec, "* * * * *");
 
     app.get('/', function(req, res){
-      res.send('Hello!');
+      res.send('Hello!').end();
+      res.send('Thaddeus Madison Jr');
     });
 
     app.get('/get', function(req, res){
