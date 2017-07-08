@@ -13,7 +13,7 @@ class BackupApi {
         var f_instance = new FirebaseBackupper(firebaseSpec, "* * * * *");
 
         app.get('/', function(req, res){
-          res.send('Hello!');
+          res.send("hello");
         });
 
         app.get('/backup', function(req, res){
@@ -44,7 +44,17 @@ class BackupApi {
             }
           }
 
+          var options = {
+            root : path
+          }
+
           res.send(returned_arr);
+        });
+
+        app.get('/backup/download', function(req, res){
+          var timestamp = req.query.timestamp;
+          var path = './backups/herosonthewatertest2/' + timestamp + '.json';
+          res.download(path);
         });
 
         app.listen(8080, function() {
@@ -58,4 +68,4 @@ class BackupApi {
 
 }
 
-module.exports = BackupApi;
+BackupApi.getBackups();
