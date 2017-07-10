@@ -4,62 +4,68 @@ const express = require('express');
 const app = express();
 
 //Get document, or throw exception on error
-try {
-    const firebaseSpec = yaml.safeLoad(fs.readFileSync('./prac.yaml', 'utf-8'));
-    const FirebaseBackupper = require('./FirebaseBackupper.js');
-    var f_instance = new FirebaseBackupper(firebaseSpec, "* * * * *");
+class BackupApi {
 
-    app.get('/', function(req, res){
-      res.send('Hello!').end();
-      res.send('Thaddeus Madison Jr');
-    });
+  static getBackups() {
+    try {
+        const firebaseSpec = yaml.safeLoad(fs.readFileSync('./prac.yaml', 'utf-8'));
+        const FirebaseBackupper = require('./FirebaseBackupper.js');
+        var f_instance = new FirebaseBackupper(firebaseSpec, "* * * * *");
 
-    app.get('/get', function(req, res){
+        app.get('/', function(req, res){
+          res.send("hello");
+        });
 
-      var path = './backups/herosonthewatertest2/';
-      var begin = req.query.fromDate;
-      var end = req.query.toDate;
-      var returned_arr = [];
-      var file_names = fs.readdirSync(path);
+        app.get('/backup', function(req, res){
 
-      if(typeof begin == 'undefined' && typeof end != 'undefined'){
+          // retrieval of correct timestamps
+          var returned_arr = [];
+          var fileName;
+          var timestamp;
 
-        var index = 0;
-        while(index < file_names.length && parseInt(file_names[index].substring(0, file_names[index].length-5)) <= end){
-          index++;
-        }
-        returned_arr = file_names.splice(0, index);
+          // query parameters
+          var path = './backups/' + req.query.path;
+          var file_names_arr = fs.readdirSync(path);
+          var begin = req.query.fromDate ||  parseInt(file_names_arr[0].substring(0, file_names_arr[0].length-5));
+          var end = req.query.toDate || '';
 
-      } else if (typeof begin != 'undefined' && typeof end == 'undefined'){
+          for(var i = 0; i < file_names_arr.length; i++){
+            fileName = file_names_arr[i];
+            timestamp = parseInt(fileName.substring(0, fileName.length-5));
 
-        var index = file_names.length - 1;
-        while(index > 0 && parseInt(file_names[index].substring(0, file_names[index].length-5)) > begin){
-          index--;
-        }
-        returned_arr = file_names.splice(index, file_names.length - index);
+            // check if timestamp is within the range specified
+            if (timestamp >= begin && (timestamp <= end || end == '')){
+              returned_arr.push(timestamp);
+            }
 
-      } else {
+            // break loop if timestamp exceeds end specified
+            if(timestamp > end && end != ''){
+              break;
+            }
+          }
 
-        var beginIndex = 0;
-        while(beginIndex < file_names.length && parseInt(file_names[beginIndex].substring(0, file_names[beginIndex].length-5)) < begin){
-          beginIndex++;
-        }
+          var options = {
+            root : path
+          }
 
-        var endIndex = file_names.length - 1;
-        while(endIndex > 0 && parseInt(file_names[endIndex].substring(0, file_names[endIndex].length-5)) > end){
-          endIndex--;
-        }
+          res.send(returned_arr);
+        });
 
-        returned_arr = file_names.splice(beginIndex, endIndex - beginIndex + 1);
-      }
+        app.get('/backup/download', function(req, res){
+          var timestamp = req.query.timestamp;
+          var path = './backups/herosonthewatertest2/' + timestamp + '.json';
+          res.download(path);
+        });
 
-      res.send(returned_arr);
-    });
+        app.listen(8080, function() {
+          console.log('listening on 8080');
+        });
 
-    app.listen(8080, function() {
-      console.log('listening on 8080');
-    });
+    } catch (e) {
+        console.log(e);
+    }
+  }
 
-} catch (e) {
-    console.log(e);
 }
+
+BackupApi.getBackups();
