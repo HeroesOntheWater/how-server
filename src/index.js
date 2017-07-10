@@ -1,1 +1,1 @@
-const BackupApi = require('./firebase-multiback');
+require('./firebase-multiback');
