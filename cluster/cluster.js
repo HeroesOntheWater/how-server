@@ -15,18 +15,18 @@ if(cluster.isMaster){
             console.log(worker_objects);
             worker.send(req.body);
         }
-        res.send('cool').end();
+        res.send('run').end();
     });
 
-    app.post('/kill', function(req, res){
+    app.delete('/kill/:pid', function(req, res){
         for(var wid in cluster.workers){
-            if(req.body.pid == cluster.workers[wid].process.pid){
-                delete worker_objects[req.body.pid];
+            if(cluster.workers[wid].process.pid == req.params.pid){
+                delete worker_objects[req.params.pid];
                 console.log(worker_objects);
                 cluster.workers[wid].send({command_set:"kill"});
             }
         }
-        res.send('cool').end();
+        res.send('delete').end();
     });
 
     app.get('/*', function(req, res) {
