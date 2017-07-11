@@ -6,65 +6,93 @@ const app = express();
 //Get document, or throw exception on error
 class BackupApi {
 
-  static getBackups() {
-    try {
-        const firebaseSpec = yaml.safeLoad(fs.readFileSync('./prac.yaml', 'utf-8'));
-        const FirebaseBackupper = require('./FirebaseBackupper.js');
-        var f_instance = new FirebaseBackupper(firebaseSpec, "* * * * *");
+    static getBackups() {
+        try {
+            const firebaseSpec = yaml.safeLoad(fs.readFileSync('./prac.yaml', 'utf-8'));
+            const FirebaseBackupper = require('./FirebaseBackupper.js');
+            var f_instance = new FirebaseBackupper(firebaseSpec, "* * * * *");
 
-        app.get('/', function(req, res){
-          res.send("hello");
-        });
+            app.get('/', function(req, res) {
+                res.send("hello");
+            });
 
-        app.get('/backup', function(req, res){
+            app.get('/backup', function(req, res) {
 
-          // retrieval of correct timestamps
-          var returned_arr = [];
-          var fileName;
-          var timestamp;
+                // retrieval of correct timestamps
+                var returned_arr = [];
+                var fileName;
+                var timestamp;
 
-          // query parameters
-          var path = './backups/' + req.query.path;
-          var file_names_arr = fs.readdirSync(path);
-          var begin = req.query.fromDate ||  parseInt(file_names_arr[0].substring(0, file_names_arr[0].length-5));
-          var end = req.query.toDate || '';
+                // query parameters
+                var path = './backups/' + req.query.path;
+                var file_names_arr = fs.readdirSync(path);
+                var begin = req.query.fromDate || '';
+                var end = req.query.toDate || '';
 
-          for(var i = 0; i < file_names_arr.length; i++){
-            fileName = file_names_arr[i];
-            timestamp = parseInt(fileName.substring(0, fileName.length-5));
+                // neither begin or end parameter given --> return last 50
+                if (begin == '' && end == '') {
 
-            // check if timestamp is within the range specified
-            if (timestamp >= begin && (timestamp <= end || end == '')){
-              returned_arr.push(timestamp);
-            }
+                    var index = 0;
+                    // check if more than 50 backups exist
+                    if (file_names_arr.length >= 50) {
+                        index = file_names_arr.length - 50;
+                    }
 
-            // break loop if timestamp exceeds end specified
-            if(timestamp > end && end != ''){
-              break;
-            }
-          }
+                    for (var i = index; i < file_names_arr.length; i++) {
+                        fileName = file_names_arr[i];
+                        timestamp = parseInt(fileName.substring(0, fileName.length - 5));
+                        returned_arr.push(timestamp);
+                    }
+                } else {
 
-          var options = {
-            root : path
-          }
+                    // set begin to first timestamp if none is given
+                    if (begin == '') {
+                        begin = parseInt(file_names_arr[0].substring(0, file_names_arr[0].length - 5));
+                    }
 
-          res.send(returned_arr);
-        });
+                    for (var i = 0; i < file_names_arr.length; i++) {
+                        fileName = file_names_arr[i];
+                        timestamp = parseInt(fileName.substring(0, fileName.length - 5));
 
-        app.get('/backup/download', function(req, res){
-          var timestamp = req.query.timestamp;
-          var path = './backups/herosonthewatertest2/' + timestamp + '.json';
-          res.download(path);
-        });
+                        // check if timestamp is within the range specified
+                        if (timestamp >= begin && (timestamp <= end || end == '')) {
+                            returned_arr.push(timestamp);
+                        }
 
-        app.listen(8080, function() {
-          console.log('listening on 8080');
-        });
+                        // break loop if timestamp exceeds end specified
+                        if (timestamp > end && end != '') {
+                            break;
+                        }
+                    }
+                }
 
-    } catch (e) {
-        console.log(e);
+                var options = {
+                    root: path
+                }
+
+                res.send(returned_arr);
+            });
+
+            // to do list
+            // 1. no dates entered = past 50 (done)
+            // 2. list all app names in given yaml file
+            // 3. return all folder names
+
+            // download file from given timestamp
+            app.get('/backup/download', function(req, res) {
+                var timestamp = req.query.timestamp;
+                var path = './backups/herosonthewatertest2/' + timestamp + '.json';
+                res.download(path);
+            });
+
+            app.listen(8080, function() {
+                console.log('listening on 8080');
+            });
+
+        } catch (e) {
+            console.log(e);
+        }
     }
-  }
 
 }
 
