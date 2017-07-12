@@ -119,28 +119,12 @@ class BackupApi {
                   if(fs.lstatSync(path + "/" + file).isDirectory()){
                     iterate(path + "/" + file, timestamps);
                   } else {
-                    timestamps.push(file);
+                    timestamps.push(file.substring(0, file.length - 5));
                   }
                 })
               }
 
               res.send(timestamps);
-              /*var app = req.query.app;
-              var path = "./backups/" + app;
-              res.send("test");
-
-              iterate(path);
-
-              function iterate(path) {
-                return fs.readdirSync(path).filter(function(file){
-                  if(fs.lstatSync(path + "/" + file).isDirectory()){
-                    return iterate(path + "/" + file);
-                  } else if(fs.lstatSync(path + "/" + file).isFile()) {
-                    console.log("yes")
-                    return file;
-                  }
-                });
-              }*/
             });
 
 
