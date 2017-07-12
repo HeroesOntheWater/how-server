@@ -20,8 +20,7 @@ class BackupApi {
 
                 // retrieval of correct timestamps
                 var returned_arr = [];
-                var fileName;
-                var timestamp;
+                var fileName, timestamp;
 
                 // query parameters
                 var path = './backups/' + req.query.path;
@@ -73,16 +72,59 @@ class BackupApi {
                 res.send(returned_arr);
             });
 
-            // to do list
-            // 1. no dates entered = past 50 (done)
-            // 2. list all app names in given yaml file
-            // 3. return all folder names
-
             // download file from given timestamp
             app.get('/backup/download', function(req, res) {
                 var timestamp = req.query.timestamp;
                 var path = './backups/herosonthewatertest2/' + timestamp + '.json';
                 res.download(path);
+            });
+
+            // return app names in backup folder
+            app.get('/backup/apps', function(req, res) {
+              var path = "./backups";
+              // gets array of everything in backups and filters for directories
+              var directories = fs.readdirSync(path).filter(function(file){
+                return fs.lstatSync(path + "/" + file).isDirectory();
+              })
+
+              res.send(directories);
+            });
+
+            // return versions in an app --> prints no versions if none exist
+            app.get('/backup/versions', function(req, res) {
+              var app = req.query.app;
+              var path = "./backups/" + app;
+              var versions = fs.readdirSync(path).filter(function(file){
+                return fs.lstatSync(path + "/" + file).isDirectory();
+              });
+
+              if(versions.length == 0){
+                res.send("no versions");
+              } else {
+                res.send(versions);
+              }
+            });
+
+            // get all files within an app
+            app.get('/backup/app/all', function(req, res) {
+              var app = req.query.app;
+              var path = "./backups/" + app;
+              var timestamps = [];
+              iterate(path, timestamps)
+
+              // recursive --> if directory call again else add timestamp
+              function iterate(path, timestamps){
+                var files = fs.readdirSync(path);
+                files.forEach(function(file){
+                  if(fs.lstatSync(path + "/" + file).isDirectory()){
+                    iterate(path + "/" + file, timestamps);
+                  } else {
+                    timestamps.push(file.substring(0, file.length - 5));
+                  }
+                })
+              }
+
+              res.send(timestamps);
             });
 
             app.listen(8080, function() {
