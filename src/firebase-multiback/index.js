@@ -20,8 +20,7 @@ class BackupApi {
 
                 // retrieval of correct timestamps
                 var returned_arr = [];
-                var fileName;
-                var timestamp;
+                var fileName, timestamp;
 
                 // query parameters
                 var path = './backups/' + req.query.path;
@@ -91,6 +90,7 @@ class BackupApi {
               res.send(directories);
             });
 
+            // return versions in an app --> prints no versions if none exist
             app.get('/backup/versions', function(req, res) {
               var app = req.query.app;
               var path = "./backups/" + app;
