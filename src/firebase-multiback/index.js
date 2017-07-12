@@ -86,7 +86,7 @@ class BackupApi {
             });
 
             // return app names in backup folder
-            app.get('/backup/versions', function(req, res) {
+            app.get('/backup/apps', function(req, res) {
               var path = "./backups";
               // gets array of everything in backups and filters for directories
               var directories = fs.readdirSync(path).filter(function(file){
