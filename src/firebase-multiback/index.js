@@ -85,6 +85,17 @@ class BackupApi {
                 res.download(path);
             });
 
+            // return app names in backup folder
+            app.get('/backup/versions', function(req, res) {
+              var path = "./backups";
+              // gets array of everything in backups and filters for directories
+              var directories = fs.readdirSync(path).filter(function(file){
+                return fs.lstatSync(path + "/" + file).isDirectory();
+              })
+
+              res.send(directories);
+            });
+
             app.listen(8080, function() {
                 console.log('listening on 8080');
             });
