@@ -106,7 +106,7 @@ class BackupApi {
             });
 
             // get all files within an app
-            app.get('/backup/versions/all', function(req, res) {
+            app.get('/backup/app/all', function(req, res) {
               var app = req.query.app;
               var path = "./backups/" + app;
               var timestamps = [];
@@ -126,7 +126,6 @@ class BackupApi {
 
               res.send(timestamps);
             });
-
 
             app.listen(8080, function() {
                 console.log('listening on 8080');
