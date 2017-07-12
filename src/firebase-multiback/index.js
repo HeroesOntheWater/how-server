@@ -105,6 +105,45 @@ class BackupApi {
               }
             });
 
+            // get all files within an app
+            app.get('/backup/versions/all', function(req, res) {
+              var app = req.query.app;
+              var path = "./backups/" + app;
+              var timestamps = [];
+              iterate(path, timestamps)
+
+              // recursive --> if directory call again else add timestamp
+              function iterate(path, timestamps){
+                var files = fs.readdirSync(path);
+                files.forEach(function(file){
+                  if(fs.lstatSync(path + "/" + file).isDirectory()){
+                    iterate(path + "/" + file, timestamps);
+                  } else {
+                    timestamps.push(file);
+                  }
+                })
+              }
+
+              res.send(timestamps);
+              /*var app = req.query.app;
+              var path = "./backups/" + app;
+              res.send("test");
+
+              iterate(path);
+
+              function iterate(path) {
+                return fs.readdirSync(path).filter(function(file){
+                  if(fs.lstatSync(path + "/" + file).isDirectory()){
+                    return iterate(path + "/" + file);
+                  } else if(fs.lstatSync(path + "/" + file).isFile()) {
+                    console.log("yes")
+                    return file;
+                  }
+                });
+              }*/
+            });
+
+
             app.listen(8080, function() {
                 console.log('listening on 8080');
             });
