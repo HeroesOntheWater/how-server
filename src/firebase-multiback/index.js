@@ -23,7 +23,7 @@ class BackupApi {
                 var fileName, timestamp;
 
                 // query parameters
-                var path = './backups/' + req.query.path;
+                var path = './backups/' + req.query.app;
                 var file_names_arr = fs.readdirSync(path);
                 var begin = req.query.fromDate || '';
                 var end = req.query.toDate || '';
@@ -65,17 +65,19 @@ class BackupApi {
                     }
                 }
 
-                var options = {
-                    root: path
-                }
-
                 res.send(returned_arr);
             });
 
             // download file from given timestamp
             app.get('/backup/download', function(req, res) {
                 var timestamp = req.query.timestamp;
-                var path = './backups/herosonthewatertest2/' + timestamp + '.json';
+                var app = req.query.app;
+                var version = req.query.version || ''
+                if(app == ''){
+                  var path = './backups/' + app + '/' + timestamp + '.json';
+                } else {
+                  var path = './backups/' + app + '/' + version + '/' + timestamp + '.json';
+                }
                 res.download(path);
             });
 
