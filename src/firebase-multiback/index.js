@@ -73,11 +73,6 @@ class BackupApi {
                 res.send(returned_arr);
             });
 
-            // to do list
-            // 1. no dates entered = past 50 (done)
-            // 2. list all app names in given yaml file
-            // 3. return all folder names
-
             // download file from given timestamp
             app.get('/backup/download', function(req, res) {
                 var timestamp = req.query.timestamp;
@@ -94,6 +89,20 @@ class BackupApi {
               })
 
               res.send(directories);
+            });
+
+            app.get('/backup/versions', function(req, res) {
+              var app = req.query.app;
+              var path = "./backups/" + app;
+              var versions = fs.readdirSync(path).filter(function(file){
+                return fs.lstatSync(path + "/" + file).isDirectory();
+              });
+
+              if(versions.length == 0){
+                res.send("no versions");
+              } else {
+                res.send(versions);
+              }
             });
 
             app.listen(8080, function() {
