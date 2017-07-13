@@ -11,6 +11,7 @@ class UserTracker{
       this.user['email'] = email;
       this.user['password'] = password;
     }
+    this.fb_refs = [];
     this.firebase_spec = yaml.safeLoad(fs.readFileSync('./prac.yaml', 'utf-8'));
     if (this.firebase_spec['General']) 
           delete this.firebase_spec['General'];
@@ -29,17 +30,20 @@ class UserTracker{
           databaseURL: `https://${db_name}.firebaseio.com`,
           projectId: db_name
       };
+      let temp_ref = 'fb_ref'+idx.toString();
     if(firebase.apps.length !== 0) {
-      firebase.app().delete();
+      this.fb_refs.push({[temp_ref] : firebase.initializeApp(db_config, 'fb_ref'+idx.toString())});
     }
-    firebase.initializeApp(db_config);
+    else{
+      this.fb_refs.push({[temp_ref] : firebase.initializeApp(db_config, 'fb_ref'+idx.toString())});
+    }
     console.log('the indexes', idx,  this.fb_keys.length);
-    this.signIn()
+    this.signIn(idx)
         .then((data)=>{
           switch(data['type']){
             case 'ERROR':
               if(idx === this.fb_keys.length-1)resp.send({type: 'ERROR', data: data});
-              else this.trySignIntoAllFirebases(idx++);
+              else this.trySignIntoAllFirebases(++idx, resp);
             break;
             case 'SUCCESS':
               resp.send({type: 'SUCCESS', data: data});
@@ -48,13 +52,14 @@ class UserTracker{
     
   }
 
-  signIn(){
+  signIn(idx){
+    let temp_ref = 'fb_ref'+idx.toString();
     console.log(this.user)
     try{
     // Signs in existing user into the application, requires valid email and password.
-    return firebase.auth().signInWithEmailAndPassword(this.user.email, this.user.password)
+    return this.fb_refs[temp_ref].auth().signInWithEmailAndPassword(this.user.email, this.user.password)
         .then(function(data) {
-            console.log('success : ' + firebase.auth().currentUser.email + ' signed In');
+            console.log('success : ' + this.fb_refs['fb_ref'+idx.toString()].auth().currentUser.email + ' signed In');
             return {
                 type: 'SUCCESS'
             };
