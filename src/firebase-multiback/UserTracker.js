@@ -4,27 +4,23 @@ const firebase = require('firebase');
 
 class UserTracker{
 
-  constructor(){
+  constructor(email, password){
+    if(email || password)
+    {
+      this.user = {};
+      this.user['email'] = email;
+      this.user['password'] = password;
+    }
     this.firebase_spec = yaml.safeLoad(fs.readFileSync('./prac.yaml', 'utf-8'));
     if (this.firebase_spec['General']) 
           delete this.firebase_spec['General'];
     
     this.fb_keys = Object.keys(this.firebase_spec);
     if(this.fb_keys.length ==0) return;
-
-    if(this.trySignIntoAllFirebases(0))//can sign-in, generate a jwt
-    {
-      console.log('im mister meeseeks!');
-    }
-    else{
-      // reject the user
-      console.log('rejected!');
-      return;
-    }
     
   }
 
-  trySignIntoAllFirebases(idx){
+  trySignIntoAllFirebases(idx, resp){
     let db_name = this.fb_keys[idx];
     let db_obj = this.firebase_spec[db_name];
     var db_config = {
@@ -42,20 +38,21 @@ class UserTracker{
         .then((data)=>{
           switch(data['type']){
             case 'ERROR':
-              if(idx === this.fb_keys.length-1)return false;
+              if(idx === this.fb_keys.length-1)resp.send({type: 'ERROR', data: data});
               else this.trySignIntoAllFirebases(idx++);
             break;
             case 'SUCCESS':
-              return true;
+              resp.send({type: 'SUCCESS', data: data});
           }
         })
     
   }
 
-  signIn(user){
+  signIn(){
+    console.log(this.user)
     try{
     // Signs in existing user into the application, requires valid email and password.
-    return firebase.auth().signInWithEmailAndPassword(user.email, user.password)
+    return firebase.auth().signInWithEmailAndPassword(this.user.email, this.user.password)
         .then(function(data) {
             console.log('success : ' + firebase.auth().currentUser.email + ' signed In');
             return {
@@ -72,7 +69,7 @@ class UserTracker{
                 message: error.message
             };
         });
-    }catch(err){ //this catch catches if the firebase config is invalid
+    }catch(error){ //this catch catches if the firebase config is invalid
       var errorCode = error.code;
             var errorMessage = error.message;
             console.log('ERROR app_invalid: ' + error.code + ': ' + error.message);
@@ -87,4 +84,4 @@ class UserTracker{
   
 }
 
-let me = new UserTracker();
+module.exports = UserTracker

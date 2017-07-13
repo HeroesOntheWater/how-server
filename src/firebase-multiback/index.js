@@ -1,6 +1,7 @@
 const yaml = require('js-yaml');
 const fs = require('fs');
 const express = require('express');
+const UserTracker = require('./UserTracker.js');
 const app = express();
 
 //Get document, or throw exception on error
@@ -8,12 +9,22 @@ class BackupApi {
 
     static getBackups() {
         try {
-            const firebaseSpec = yaml.safeLoad(fs.readFileSync('./prac.yaml', 'utf-8'));
-            const FirebaseBackupper = require('./FirebaseBackupper.js');
-            var f_instance = new FirebaseBackupper(firebaseSpec, "* * * * *");
+            // const firebaseSpec = yaml.safeLoad(fs.readFileSync('./prac.yaml', 'utf-8'));
+            // const FirebaseBackupper = require('./FirebaseBackupper.js');
+            // var f_instance = new FirebaseBackupper(firebaseSpec, "* * * * *");
 
             app.get('/', function(req, res) {
-                res.send("hello");
+              // var thad = new Promise(function(resp, rej){
+              //   setTimeout(function(){
+              //     resp('thad');
+              //   }, 3000)
+              // });
+              // thad.then(function(){
+              //   res.send("hello");
+              // })
+              let u = new UserTracker(req.query.email, req.query.password);
+              u.trySignIntoAllFirebases(0, res);
+                
             });
 
             app.get('/backup', function(req, res) {
