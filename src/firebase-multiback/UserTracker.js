@@ -30,14 +30,9 @@ class UserTracker{
           databaseURL: `https://${db_name}.firebaseio.com`,
           projectId: db_name
       };
-      let temp_ref = 'fb_ref'+idx.toString();
-    if(firebase.apps.length !== 0) {
-      this.fb_refs.push({[temp_ref] : firebase.initializeApp(db_config, 'fb_ref'+idx.toString())});
-    }
-    else{
-      this.fb_refs.push({[temp_ref] : firebase.initializeApp(db_config, 'fb_ref'+idx.toString())});
-    }
-    console.log('the indexes', idx,  this.fb_keys.length);
+
+      this.fb_refs.push(firebase.initializeApp(db_config, 'fb_ref'+idx.toString()));
+
     this.signIn(idx)
         .then((data)=>{
           switch(data['type']){
@@ -53,18 +48,17 @@ class UserTracker{
   }
 
   signIn(idx){
-    let temp_ref = 'fb_ref'+idx.toString();
-    console.log(this.user)
+
     try{
     // Signs in existing user into the application, requires valid email and password.
-    return this.fb_refs[temp_ref].auth().signInWithEmailAndPassword(this.user.email, this.user.password)
-        .then(function(data) {
-            console.log('success : ' + this.fb_refs['fb_ref'+idx.toString()].auth().currentUser.email + ' signed In');
+    return this.fb_refs[idx].auth().signInWithEmailAndPassword(this.user.email, this.user.password)
+        .then((data)=> { //these need to be arrow function or the console log below will throw an error
+            console.log('success : ' + this.fb_refs[idx].auth().currentUser.email + ' signed In');
             return {
                 type: 'SUCCESS'
             };
         })
-        .catch(function(error) {//this catch catches if the user has bad credentials
+        .catch((error)=> {//this catch catches if the user has bad credentials
             var errorCode = error.code;
             var errorMessage = error.message;
             console.log('ERROR user_invalid: ' + error.code + ': ' + error.message);
