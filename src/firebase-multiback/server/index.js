@@ -1,20 +1,48 @@
 const yaml = require('js-yaml');
 const fs = require('fs');
 const express = require('express');
+const UserTracker = require('./UserTracker.js');
 const app = express();
+const cors = require('cors');
+const jwt = require('jsonwebtoken');
+const secret = require('./secret.js');
+
+console.log(__dirname, __filename)
 
 //Get document, or throw exception on error
 class BackupApi {
 
     static getBackups() {
         try {
-            const firebaseSpec = yaml.safeLoad(fs.readFileSync('./prac.yaml', 'utf-8'));
+            const firebaseSpec = yaml.safeLoad(fs.readFileSync('./src/firebase-multiback/server/prac.yaml', 'utf-8'));
             const FirebaseBackupper = require('./FirebaseBackupper.js');
             var f_instance = new FirebaseBackupper(firebaseSpec, "* * * * *");
 
-            app.get('/', function(req, res) {
-                res.send("hello");
+            app.use(cors());
+
+            //verify tokens
+            app.use((req, res, next)=>{
+              if(req.path.includes('login')){
+                next();
+                return;
+              } 
+              jwt.verify(req.query.token, secret.key, function(err, decoded) {
+                if(err) {
+                  return res.status(404).send('This page does not exist. Down for maintenance');
+                }
+                next();
+              });
+            })
+
+            app.get('/login', function(req, res) {
+              let u = new UserTracker(req.query.email, req.query.password);
+              return u.trySignIntoAllFirebases(0, res);
+                
             });
+
+            app.get('/', function(req, res){
+              res.send('hello world');
+            })
 
             app.get('/backup', function(req, res) {
 
