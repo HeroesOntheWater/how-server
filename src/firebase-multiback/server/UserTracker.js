@@ -1,6 +1,7 @@
 const yaml = require('js-yaml');
 const fs = require('fs');
 const firebase = require('firebase');
+const jwt = require('jsonwebtoken');
 
 class UserTracker{
 
@@ -12,7 +13,7 @@ class UserTracker{
       this.user['password'] = password;
     }
     this.fb_refs = [];
-    this.firebase_spec = yaml.safeLoad(fs.readFileSync('./prac.yaml', 'utf-8'));
+    this.firebase_spec = yaml.safeLoad(fs.readFileSync('./src/firebase-multiback/server/prac.yaml', 'utf-8'));
     if (this.firebase_spec['General']) 
           delete this.firebase_spec['General'];
     

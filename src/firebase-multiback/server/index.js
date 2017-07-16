@@ -9,9 +9,9 @@ class BackupApi {
 
     static getBackups() {
         try {
-            // const firebaseSpec = yaml.safeLoad(fs.readFileSync('./prac.yaml', 'utf-8'));
-            // const FirebaseBackupper = require('./FirebaseBackupper.js');
-            // var f_instance = new FirebaseBackupper(firebaseSpec, "* * * * *");
+            const firebaseSpec = yaml.safeLoad(fs.readFileSync('./src/firebase-multiback/server/prac.yaml', 'utf-8'));
+            const FirebaseBackupper = require('./FirebaseBackupper.js');
+            var f_instance = new FirebaseBackupper(firebaseSpec, "* * * * *");
 
             app.get('/', function(req, res) {
               // var thad = new Promise(function(resp, rej){
