@@ -7,6 +7,8 @@ const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const secret = require('./secret.js');
 
+console.log(__dirname, __filename)
+
 //Get document, or throw exception on error
 class BackupApi {
 

@@ -2,11 +2,14 @@ const yaml = require('js-yaml');
 const fs = require('fs');
 const firebase = require('firebase');
 const jwt = require('jsonwebtoken');
-const secret = require('./secret.js');
+const secret = require(`${__dirname}/secret.js`);
 
 class UserTracker{
 
   constructor(email, password){
+    //variable definitions (just here for readability)
+    Object.assign(this, this.userTrackerDefault());
+    //end variable definitions
     if(email || password)
     {
       this.user = {};
@@ -21,6 +24,16 @@ class UserTracker{
     this.fb_keys = Object.keys(this.firebase_spec);
     if(this.fb_keys.length ==0) return;
     
+  }
+
+  userTrackerDefault(){
+    if(this.fb_refs)this.fb_refs.forEach((fb_ref)=>fb_ref.delete());
+    return {
+      user: null,
+      fb_refs: null,
+      firebase_spec: null,
+      fb_keys:null
+    }
   }
 
   trySignIntoAllFirebases(idx, resp){
@@ -39,10 +52,14 @@ class UserTracker{
         .then((data)=>{
           switch(data['type']){
             case 'ERROR':
-              if(idx === this.fb_keys.length-1)resp.send({type: 'ERROR', data: data});
+              if(idx === this.fb_keys.length-1){
+                Object.assign(this, this.userTrackerDefault());
+                resp.send({type: 'ERROR', data: data});
+              }
               else this.trySignIntoAllFirebases(++idx, resp);
             break;
             case 'SUCCESS':
+              Object.assign(this, this.userTrackerDefault());
               resp.send({type: 'SUCCESS', data: jwt.sign(secret.payload, secret.key)});
           }
         })
