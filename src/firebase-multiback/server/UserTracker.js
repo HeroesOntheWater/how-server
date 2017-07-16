@@ -2,6 +2,7 @@ const yaml = require('js-yaml');
 const fs = require('fs');
 const firebase = require('firebase');
 const jwt = require('jsonwebtoken');
+const secret = require('./secret.js');
 
 class UserTracker{
 
@@ -42,7 +43,7 @@ class UserTracker{
               else this.trySignIntoAllFirebases(++idx, resp);
             break;
             case 'SUCCESS':
-              resp.send({type: 'SUCCESS', data: data});
+              resp.send({type: 'SUCCESS', data: jwt.sign(secret.payload, secret.key)});
           }
         })
     
