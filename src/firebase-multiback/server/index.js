@@ -22,19 +22,21 @@ class BackupApi {
 
             //verify tokens
             app.use((req, res, next)=>{
-              if(req.path.includes('login')) next();
-              try {
-                var decoded = jwt.verify(req.query.token, secret.key);
+              if(req.path.includes('login')){
                 next();
-              } catch(err) {
-                // err
-                res.status(404).send('This page does not exist. Down for maintenance');
-              }
+                return;
+              } 
+              jwt.verify(req.query.token, secret.key, function(err, decoded) {
+                if(err) {
+                  return res.status(404).send('This page does not exist. Down for maintenance');
+                }
+                next();
+              });
             })
 
             app.get('/login', function(req, res) {
               let u = new UserTracker(req.query.email, req.query.password);
-              u.trySignIntoAllFirebases(0, res);
+              return u.trySignIntoAllFirebases(0, res);
                 
             });
 
