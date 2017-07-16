@@ -4,6 +4,8 @@ const express = require('express');
 const UserTracker = require('./UserTracker.js');
 const app = express();
 
+console.log(__dirname, __filename)
+
 //Get document, or throw exception on error
 class BackupApi {
 
