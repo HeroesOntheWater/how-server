@@ -3,6 +3,9 @@ const fs = require('fs');
 const express = require('express');
 const UserTracker = require('./UserTracker.js');
 const app = express();
+const cors = require('cors');
+const jwt = require('jsonwebtoken');
+const secret = require('./secret.js');
 
 //Get document, or throw exception on error
 class BackupApi {
@@ -13,19 +16,29 @@ class BackupApi {
             const FirebaseBackupper = require('./FirebaseBackupper.js');
             var f_instance = new FirebaseBackupper(firebaseSpec, "* * * * *");
 
-            app.get('/', function(req, res) {
-              // var thad = new Promise(function(resp, rej){
-              //   setTimeout(function(){
-              //     resp('thad');
-              //   }, 3000)
-              // });
-              // thad.then(function(){
-              //   res.send("hello");
-              // })
+            app.use(cors());
+
+            //verify tokens
+            app.use((req, res, next)=>{
+              if(req.path.includes('login')) next();
+              try {
+                var decoded = jwt.verify(req.query.token, secret.key);
+                next();
+              } catch(err) {
+                // err
+                res.status(404).send('This page does not exist. Down for maintenance');
+              }
+            })
+
+            app.get('/login', function(req, res) {
               let u = new UserTracker(req.query.email, req.query.password);
               u.trySignIntoAllFirebases(0, res);
                 
             });
+
+            app.get('/', function(req, res){
+              res.send('hello world');
+            })
 
             app.get('/backup', function(req, res) {
 
