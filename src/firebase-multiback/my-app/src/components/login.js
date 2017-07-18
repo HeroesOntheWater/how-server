@@ -1,5 +1,10 @@
 import React, { Component } from 'react';
 import request from 'superagent';
+import createHistory from 'history/createBrowserHistory';
+
+const history = createHistory({
+  forceRefresh: true
+});
 
 class Login extends Component {
   constructor(props){
@@ -30,8 +35,8 @@ class Login extends Component {
           if (err) {
             alert('Error', err);
           } else {
-            this.setState({token : res.body.data})
-            alert(res.body.data);
+            this.setState({token : res.body.data});
+            history.push('/backups/all', { token: res.body.data });
           }
         });
     event.preventDefault();

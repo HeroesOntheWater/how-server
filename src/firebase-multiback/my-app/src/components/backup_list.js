@@ -7,11 +7,14 @@ class BackupList extends Component {
   constructor(props){
     super(props);
     this.state = {
-      apps : []
+      apps : [],
+      token : props.location.token
     };
   }
 
   componentWillMount() {
+    console.log(this.state.token);
+    const url = "google.com";
     request.get(url)
         .end((err, res) => {
             if (err) {
@@ -25,13 +28,14 @@ class BackupList extends Component {
 
   render() {
     return(
-    <div>
+      <h1>Test</h1>
+    /*<div>
       <ul>
         {this.state.apps.map((app) => (
           <li key={app}>{app}</li>
         ))}
       </ul>
-    </div>
+    </div>*/
   );
   }
 }
