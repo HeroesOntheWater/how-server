@@ -11,9 +11,7 @@ ReactDOM.render(
     <switch>
     {/* leaving the default path exposed for readability. all others are resolved.*/}
     <Route path="/" component={App} />
-    {paths.map((v) => {
-        return <Route path={v.path} component={v.component} />
-      })}
+    {paths.map((v) => <Route path={v.path} component={v.component} />)}
     </switch>
   </Router>, document.getElementById('root'));
 registerServiceWorker();
