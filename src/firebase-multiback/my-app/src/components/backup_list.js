@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import request from 'superagent';
+import process from 'dotenv'
 
 class BackupList extends Component {
 
@@ -11,7 +12,6 @@ class BackupList extends Component {
   }
 
   componentWillMount() {
-    const url = 'http://localhost:8080/backup/apps?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1MDAyNDE5MjF9.qEPsG9m07luztQiLOvL5Ym1lIZY1tsbmSbXjhcMP5Hk';
     request.get(url)
         .end((err, res) => {
             if (err) {
