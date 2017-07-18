@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import request from 'superagent';
-import createHistory from 'history/createBrowserHistory';
+import createBrowserHistory  from 'history/createBrowserHistory';
 
-const history = createHistory({
+const history = createBrowserHistory ({
   forceRefresh: true
 });
 
@@ -12,7 +12,6 @@ class Login extends Component {
     this.state = {
       email : '',
       password : '',
-      token : ''
     };
 
     this.handleChangeEmail = this.handleChangeEmail.bind(this);
@@ -35,7 +34,6 @@ class Login extends Component {
           if (err) {
             alert('Error', err);
           } else {
-            this.setState({token : res.body.data});
             history.push('/backups/all', { token: res.body.data });
           }
         });

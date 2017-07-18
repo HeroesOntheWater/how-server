@@ -8,19 +8,19 @@ class BackupList extends Component {
     super(props);
     this.state = {
       apps : [],
-      token : props.location.token
+      token : this.props.location.state.token
     };
   }
 
   componentWillMount() {
-    console.log(this.state.token);
-    const url = "google.com";
+    const url = 'http://localhost:8080/backup/apps?token=' + this.state.token;
     request.get(url)
         .end((err, res) => {
             if (err) {
               console.log('Error', err);
             } else {
               this.setState({ apps: res.body });
+              console.log(res.body);
             }
         }
     );
@@ -28,14 +28,13 @@ class BackupList extends Component {
 
   render() {
     return(
-      <h1>Test</h1>
-    /*<div>
+    <div>
       <ul>
         {this.state.apps.map((app) => (
           <li key={app}>{app}</li>
         ))}
       </ul>
-    </div>*/
+    </div>
   );
   }
 }
