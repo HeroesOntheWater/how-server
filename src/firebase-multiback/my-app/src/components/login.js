@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
 import request from 'superagent';
-import createBrowserHistory  from 'history/createBrowserHistory';
-
-const history = createBrowserHistory ({
-  forceRefresh: true
-});
+import history from '../utils/history'
 
 class Login extends Component {
   constructor(props){
@@ -49,7 +45,7 @@ class Login extends Component {
         </label>
         <label>
         Password:
-          <input type="text" value={this.state.password} onChange={this.handleChangePassword} />
+          <input type="password" value={this.state.password} onChange={this.handleChangePassword} />
         </label>
         <input type="submit" value="Submit" />
       </form>
