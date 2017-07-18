@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import request from 'superagent';
-import history from '../utils/history'
+import createBrowserHistory  from 'history/createBrowserHistory';
+
+const history = createBrowserHistory ({
+  forceRefresh: true
+});
 
 class Login extends Component {
   constructor(props){
