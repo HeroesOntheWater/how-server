@@ -26,19 +26,23 @@ class FirebaseBackupper {
     }
 
     // func(firebase_endpoint, secret_key, version)
-    makeBackup(config, fbRef) {
+    makeBackup(config, fb_db_name) {
         const pathPrefix = 'backups/';
         let path = "";
         let url = "";
         if (Object.keys(config).length === 0) {
-            console.log('Not enough arguments in ' + fbRef + "\'s config");
+            console.log('Not enough arguments in ' + fb_db_name + "\'s config");
             return;
         }
 
-        path = (config.hasOwnProperty('version')) ? config['version'] : fbRef;
+        path = (config.hasOwnProperty('version')) ? `${fb_db_name}/${config['version']}` : `${fb_db_name}/default`;
         path = pathPrefix + path;
-        url = `https://${fbRef}.firebaseio.com/.json?format=export&auth=${config['secret_key']}`;
+        url = `https://${fb_db_name}.firebaseio.com/.json?format=export&auth=${config['secret_key']}`;
         request(url, (err, resp, body) => {
+            if(JSON.parse(body).hasOwnProperty('error')){
+              console.log('this wasnt a real backup');
+              return;
+            }
             if (this.preparePath(path)) {
                 let timestamp = new Date().getTime();
                 if (/^win/.test(process.platform)) { //windows patch
@@ -81,32 +85,32 @@ class FirebaseBackupper {
             delete this.yaml['General'];
         }
 
-        var hi = [];
-        for (let me in this.yaml) {
+        var crons = [];
+        for (let fb_db_ref in this.yaml) {
 
             //The secret_key is a required field.
             //If not supplied, this key should be skipped.
             try {
-                this.yaml[me].hasOwnProperty('secret_key');
+                this.yaml[fb_db_ref].hasOwnProperty('secret_key');
             } catch (err) {
-                console.log("The secret key is a required field. skipping config " + me + "...");
+                console.log("The secret key is a required field. skipping config " + fb_db_ref + "...");
                 continue;
             }
 
-            let cron_value = (this.yaml[me].hasOwnProperty('interval')) ? this.yaml[me]['interval'] : this.backupInterval;
+            let fb_db_ref_interval = (this.yaml[fb_db_ref].hasOwnProperty('interval')) ? this.yaml[fb_db_ref]['interval'] : this.backupInterval;
 
-            // //run cronjobs
-            /*hi.push(new cron.CronJob(cron_value, () => { //arrow function is important here due to usage of the this keyword*/
-                /*    this.makeBackup(this.yaml[me], me);*/
-              /*    },
+            //run cronjobs
+            crons.push(new cron.CronJob(fb_db_ref_interval, () => { //arrow function is important here due to usage of the this keyword*/
+                    this.makeBackup(this.yaml[fb_db_ref], fb_db_ref);
+                 },
                 null,
                 true, //true says to run the job immediately
                 null // Timezone: null tells the library to take timezone of node server
-            ));*/
+            ));
 
 
         }
-        return hi;
+        return crons;
     }
 
     get printYaml() { console.log(this.yaml); }
