@@ -25,7 +25,7 @@ class BackupApi {
               if(req.path.includes('login')){
                 next();
                 return;
-              } 
+              }
               jwt.verify(req.query.token, secret.key, function(err, decoded) {
                 if(err) {
                   return res.status(404).send('This page does not exist. Down for maintenance');
@@ -37,7 +37,7 @@ class BackupApi {
             app.get('/login', function(req, res) {
               let u = new UserTracker(req.query.email, req.query.password);
               return u.trySignIntoAllFirebases(0, res);
-                
+
             });
 
             app.get('/', function(req, res){
@@ -51,7 +51,7 @@ class BackupApi {
                 var fileName, timestamp;
 
                 // query parameters
-                var path = './backups/' + req.query.app;
+                var path = './backups/' + req.query.app  +  '/' + req.query.version;
                 var file_names_arr = fs.readdirSync(path);
                 var begin = req.query.fromDate || '';
                 var end = req.query.toDate || '';
