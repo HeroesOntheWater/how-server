@@ -25,7 +25,7 @@ class BackupList extends Component {
         .end((err, res) => {
             if (err) {
               console.log('Error', err);
-            } else if(res.body != null){
+            } else if(res.body[0] != 'default'){
               this.setState({ versions: res.body });
             } else {
               history.push('/backups/version/files', {app:this.state.app, version:'default', token:this.state.token});

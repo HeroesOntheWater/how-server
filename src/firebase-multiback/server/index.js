@@ -51,14 +51,7 @@ class BackupApi {
                 var fileName, timestamp;
 
                 // query parameters
-                var path;
-                var version = req.query.version || '';
-                if(version != '') {
-                  path = './backups/' + req.query.app  +  '/' + req.query.version;
-                } else {
-                  path = './backups/' + req.query.app;
-                }
-
+                var path = './backups/' + req.query.app  +  '/' + req.query.version;
                 var file_names_arr = fs.readdirSync(path);
                 var begin = req.query.fromDate || '';
                 var end = req.query.toDate || '';

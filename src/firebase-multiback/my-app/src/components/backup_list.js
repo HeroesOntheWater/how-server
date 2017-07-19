@@ -27,7 +27,6 @@ class BackupList extends Component {
               console.log('Error', err);
             } else {
               this.setState({ apps: res.body });
-              console.log(res.body);
             }
         }
     );
