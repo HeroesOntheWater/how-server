@@ -22,6 +22,7 @@ class FileList extends Component {
     this.handleBeginChange = this.handleBeginChange.bind(this);
     this.handleEndChange = this.handleEndChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleDownload = this.handleDownload.bind(this);
   }
 
   handleBeginChange(event) {
@@ -31,9 +32,8 @@ class FileList extends Component {
   handleEndChange(event) {
     this.setState({end: event.target.value});
   }
-  //eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1MDAyNDE5MjF9.qEPsG9m07luztQiLOvL5Ym1lIZY1tsbmSbXjhcMP5Hk
+
   handleSubmit(event) {
-    console.log(this.state.token);
     var url = "http://localhost:8080/backup?token=" + this.state.token + "&app=" + this.state.app +
     "&version=" + this.state.version + "&fromDate=" + this.state.begin + "&toDate=" + this.state.end;
     request.get(url)
@@ -46,6 +46,20 @@ class FileList extends Component {
         }
       );
     event.preventDefault();
+  }
+
+  handleDownload(timestamp) {
+    var url = "http://localhost:8080/backup/download?token=" + this.state.token + "&app=" + this.state.app +
+    "&version=" + this.state.version + "&timestamp=" + timestamp;
+    request.get(url)
+        .end((err, res) => {
+            if (err) {
+              console.log('Error', err);
+            } else {
+              window.open(url);
+            }
+        }
+    )
   }
 
   render() {
@@ -64,8 +78,8 @@ class FileList extends Component {
           <input type="submit" value="Submit" />
         </form>
         <ul>
-          {this.state.files.map((file) => (
-            <li key={file}>{file}</li>
+          {this.state.files.map((timestamp) => (
+            <li onClick={() => this.handleDownload(timestamp)} key={timestamp}>{timestamp}</li>
           ))}
         </ul>
       </div>

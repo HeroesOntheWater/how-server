@@ -35,8 +35,6 @@ class BackupList extends Component {
   }
 
   handleClick(app, version) {
-    console.log(app);
-    console.log(version);
     history.push('/backups/version/files', {app: app, version: version, token:this.state.token});
   }
 
