@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import request from 'superagent';
-import {Route, Link} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import createBrowserHistory  from 'history/createBrowserHistory';
 
 const history = createBrowserHistory( {
@@ -33,8 +33,8 @@ class BackupList extends Component {
     );
   }
 
-  handleClick(event) {
-    history.push('/backups/version', {token:this.state.token});
+  handleClick(app) {
+    history.push('/backups/version', {app: app, token:this.state.token});
   }
 
   render() {
@@ -42,7 +42,7 @@ class BackupList extends Component {
     <div>
       <ul>
         {this.state.apps.map((app) => (
-          <li onClick={this.handleClick} key={app}>{app}</li>
+          <li onClick={() => this.handleClick(app)} key={app}>{app}</li>
         ))}
       </ul>
     </div>
