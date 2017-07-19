@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
 import request from 'superagent';
-import process from 'dotenv'
+import {Route, Link} from 'react-router-dom';
+import createBrowserHistory  from 'history/createBrowserHistory';
+
+const history = createBrowserHistory( {
+  forceRefresh:true
+});
 
 class BackupList extends Component {
 
@@ -10,6 +15,8 @@ class BackupList extends Component {
       apps : [],
       token : this.props.location.state.token
     };
+
+    this.handleClick = this.handleClick.bind(this);
   }
 
   componentWillMount() {
@@ -26,12 +33,16 @@ class BackupList extends Component {
     );
   }
 
+  handleClick(event) {
+    history.push('/backups/version', {token:this.state.token});
+  }
+
   render() {
     return(
     <div>
       <ul>
         {this.state.apps.map((app) => (
-          <li key={app}>{app}</li>
+          <li onClick={this.handleClick} key={app}>{app}</li>
         ))}
       </ul>
     </div>
