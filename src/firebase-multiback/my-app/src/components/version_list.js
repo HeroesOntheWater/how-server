@@ -15,6 +15,8 @@ class BackupList extends Component {
       versions : [],
       token : this.props.location.state.token
     };
+
+    this.handleClick = this.handleClick.bind(this);
   }
 
   componentWillMount() {
@@ -26,10 +28,16 @@ class BackupList extends Component {
             } else if(res.body != null){
               this.setState({ versions: res.body });
             } else {
-              history.push('/backups/other');
+              history.push('/backups/version/files', {app:this.state.app, version:'default', token:this.state.token});
             }
         }
     );
+  }
+
+  handleClick(app, version) {
+    console.log(app);
+    console.log(version);
+    history.push('/backups/version/files', {app: app, version: version, token:this.state.token});
   }
 
   render() {
@@ -37,7 +45,7 @@ class BackupList extends Component {
     <div>
       <ul>
         {this.state.versions.map((version) => (
-          <li key={version}>{version}</li>
+          <li onClick={() => this.handleClick(this.state.app, version)} key={version}>{version}</li>
         ))}
       </ul>
     </div>
