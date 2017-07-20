@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import request from 'superagent';
 import createBrowserHistory  from 'history/createBrowserHistory';
+import Calendar from './calendar';
 
 const history = createBrowserHistory ({
   forceRefresh: true
@@ -82,6 +83,7 @@ class FileList extends Component {
             <li onClick={() => this.handleDownload(timestamp)} key={timestamp}>{timestamp}</li>
           ))}
         </ul>
+        <Calendar />
       </div>
     );
   }
