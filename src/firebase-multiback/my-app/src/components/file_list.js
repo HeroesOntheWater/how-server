@@ -24,6 +24,8 @@ class FileList extends Component {
     this.handleEndChange = this.handleEndChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleDownload = this.handleDownload.bind(this);
+    this.handleEndCallback = this.handleEndCallback.bind(this);
+    this.handleBeginCallback = this.handleBeginCallback.bind(this);
   }
 
   handleBeginChange(event) {
@@ -32,6 +34,16 @@ class FileList extends Component {
 
   handleEndChange(event) {
     this.setState({end: event.target.value});
+  }
+
+  handleBeginCallback(dataFromChild) {
+    this.setState({begin: dataFromChild});
+    console.log(this.state.begin);
+
+  }
+
+  handleEndCallback(dataFromChild) {
+    this.setState({end: dataFromChild});
   }
 
   handleSubmit(event) {
@@ -83,7 +95,8 @@ class FileList extends Component {
             <li onClick={() => this.handleDownload(timestamp)} key={timestamp}>{timestamp}</li>
           ))}
         </ul>
-        <Calendar />
+        <Calendar callbackFromParent={this.handleBeginCallback} />
+        <Calendar callbackFromParent={this.handleEndCallback}/>
       </div>
     );
   }

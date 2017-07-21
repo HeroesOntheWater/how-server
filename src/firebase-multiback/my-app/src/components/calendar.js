@@ -2,6 +2,19 @@ import React, {Component} from 'react';
 import Datetime from 'react-datetime';
 
 class Calendar extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      endTimestamp: ''
+    }
+  }
+
+  handleChange = (event) => {
+    this.setState({endTimestamp: event._d.valueOf()});
+    this.props.callbackFromParent(event._d.valueOf());
+  }
+
   /*constructor(props) {
     super(props);
     this.state = {
@@ -20,7 +33,7 @@ class Calendar extends Component {
   render() {
     return (
       <div>
-        <Datetime />
+        <Datetime defaultValue={new Date()} onChange={this.handleChange }/>
       </div>
     );
   }
