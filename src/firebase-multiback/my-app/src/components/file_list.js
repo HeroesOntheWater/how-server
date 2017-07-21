@@ -1,11 +1,6 @@
 import React, { Component } from 'react';
 import request from 'superagent';
-import createBrowserHistory  from 'history/createBrowserHistory';
 import Calendar from './calendar';
-
-const history = createBrowserHistory ({
-  forceRefresh: true
-});
 
 class FileList extends Component {
 
@@ -19,34 +14,25 @@ class FileList extends Component {
       end: '',
       files: []
     };
-
-    this.handleBeginChange = this.handleBeginChange.bind(this);
-    this.handleEndChange = this.handleEndChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleDownload = this.handleDownload.bind(this);
-    this.handleEndCallback = this.handleEndCallback.bind(this);
-    this.handleBeginCallback = this.handleBeginCallback.bind(this);
   }
 
-  handleBeginChange(event) {
+  handleBeginChange = (event) => {
     this.setState({begin: event.target.value});
   }
 
-  handleEndChange(event) {
+  handleEndChange = (event) => {
     this.setState({end: event.target.value});
   }
 
-  handleBeginCallback(dataFromChild) {
-    this.setState({begin: dataFromChild});
-    console.log(this.state.begin);
-
+  handleBeginCallback = (timestamp) => {
+    this.setState({begin: timestamp});
   }
 
-  handleEndCallback(dataFromChild) {
-    this.setState({end: dataFromChild});
+  handleEndCallback = (timestamp) => {
+    this.setState({end: timestamp});
   }
 
-  handleSubmit(event) {
+  handleSubmit = (event) => {
     var url = "http://localhost:8080/backup?token=" + this.state.token + "&app=" + this.state.app +
     "&version=" + this.state.version + "&fromDate=" + this.state.begin + "&toDate=" + this.state.end;
     request.get(url)
@@ -61,7 +47,7 @@ class FileList extends Component {
     event.preventDefault();
   }
 
-  handleDownload(timestamp) {
+  handleDownload = (timestamp) => {
     var url = "http://localhost:8080/backup/download?token=" + this.state.token + "&app=" + this.state.app +
     "&version=" + this.state.version + "&timestamp=" + timestamp;
     request.get(url)
@@ -72,7 +58,7 @@ class FileList extends Component {
               window.open(url);
             }
         }
-    )
+      );
   }
 
   render() {
