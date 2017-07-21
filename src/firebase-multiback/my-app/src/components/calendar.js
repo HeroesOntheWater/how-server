@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import Datetime from 'react-datetime';
+import '../views/calendar.css';
 
 class Calendar extends Component {
 

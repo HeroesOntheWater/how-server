@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import request from 'superagent';
 import createBrowserHistory  from 'history/createBrowserHistory';
+import TextField from 'material-ui/TextField';
+import RaisedButton from 'material-ui/RaisedButton';
 
 const history = createBrowserHistory ({
   forceRefresh: true
@@ -13,28 +15,26 @@ class Login extends Component {
       email : '',
       password : '',
     };
-
-    this.handleChangeEmail = this.handleChangeEmail.bind(this);
-    this.handleChangePassword = this.handleChangePassword.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleChangeEmail(event) {
+  handleChangeEmail = (event) => {
     this.setState({email : event.target.value});
   }
 
-  handleChangePassword(event) {
+  handleChangePassword = (event) => {
     this.setState({password : event.target.value});
   }
 
-  handleSubmit(event) {
+  handleSubmit = (event) => {
     const url = "http://localhost:8080/login?email=" + this.state.email + "&password=" + this.state.password;
     request.get(url)
       .end((err, res) => {
           if (err) {
-            alert('Error', err);
-          } else {
-            history.push('/backups/all', { token: res.body.data });
+            alert("Retry", err);
+          } else if (res.body.type === "ERROR") {
+            alert(res.body.data.message);
+          } else if (res.body.type === "SUCCESS"){
+            history.push('/backups/all', {token: res.body.data});
           }
         });
     event.preventDefault();
@@ -43,17 +43,13 @@ class Login extends Component {
   render() {
     return (
       <form onSubmit={this.handleSubmit}>
-        <label>
-        Email:
-          <input type="text" value={this.state.email} onChange={this.handleChangeEmail} />
-        </label>
-        <label>
-        Password:
-          <input type="password" value={this.state.password} onChange={this.handleChangePassword} />
-        </label>
-        <input type="submit" value="Submit" />
+        <TextField value={this.state.email} onChange={this.handleChangeEmail} hintText="Email" />
+        <br />
+        <TextField value={this.state.password} onChange={this.handleChangePassword} hintText="Password"/>
+        <br />
+        <RaisedButton label="Submit" type="submit" value="Submit" />
       </form>
-    )
+    );
   }
 }
 

@@ -71,7 +71,7 @@ class FileList extends Component {
         <form onSubmit={this.handleSubmit}>
           <label>
           Beginning:
-          <input value={moment(this.state.end).format("MM/DD/YYYY hh:mm a")} onChange={this.handleBeginChange} type="text" />
+          <input value={moment(this.state.begin).format("MM/DD/YYYY hh:mm a")} onChange={this.handleBeginChange} type="text" />
           </label>
           <label>
           Ending:
