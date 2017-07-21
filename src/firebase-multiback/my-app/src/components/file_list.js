@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import request from 'superagent';
 import Calendar from './calendar';
+import moment from 'moment';
+
+const defaultDate = (new Date()).valueOf();
 
 class FileList extends Component {
 
@@ -10,8 +13,8 @@ class FileList extends Component {
       app: this.props.location.state.app,
       version: this.props.location.state.version,
       token: this.props.location.state.token,
-      begin: '',
-      end: '',
+      begin: defaultDate,
+      end: defaultDate,
       files: []
     };
   }
@@ -68,11 +71,11 @@ class FileList extends Component {
         <form onSubmit={this.handleSubmit}>
           <label>
           Beginning:
-          <input value={this.state.begin} onChange={this.handleBeginChange} type="text" />
+          <input value={moment(this.state.end).format("MM/DD/YYYY hh:mm a")} onChange={this.handleBeginChange} type="text" />
           </label>
           <label>
           Ending:
-          <input value={this.state.end} onChange={this.handleEndChange} type="text" />
+          <input value={moment(this.state.end).format("MM/DD/YYYY hh:mm a")} onChange={this.handleEndChange} type="text" />
           </label>
           <input type="submit" value="Submit" />
         </form>
