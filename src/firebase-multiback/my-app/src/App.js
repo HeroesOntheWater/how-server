@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import Login from './components/login';
-import logo from './logo.svg';
+import logo from './views/logo.png';
 import './App.css';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import AppBar from 'material-ui/AppBar';
 
 class App extends Component {
   render() {
@@ -16,7 +14,7 @@ class App extends Component {
             <h2>Welcome to React</h2>
           </div>
           <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
+          Enter your registered email and firebase password to look at the backups.
           </p>
           <Login />
         </div>
