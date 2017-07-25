@@ -1,10 +1,20 @@
 import React, { Component } from 'react';
 import request from 'superagent';
 import createBrowserHistory  from 'history/createBrowserHistory';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import '../App.css';
+import logo from '../views/logo.png';
+import FlatButton from 'material-ui/FlatButton';
 
 const history = createBrowserHistory ({
   forceRefresh: true
 });
+
+const style = {
+  height: "100px",
+  width: "51%",
+  clear: "left"
+}
 
 class BackupList extends Component {
 
@@ -40,14 +50,23 @@ class BackupList extends Component {
 
   render() {
     return(
-    <div>
-      <ul>
-        {this.state.versions.map((version) => (
-          <li onClick={() => this.handleClick(this.state.app, version)} key={version}>{version}</li>
-        ))}
-      </ul>
-    </div>
-  );
+    <MuiThemeProvider>
+      <div className="App">
+        <div className="App-header">
+          <img src={logo} className="App-logo" alt="logo" />
+          <h2>Welcome to React</h2>
+        </div>
+        <div>
+          <ul>
+            {this.state.versions.map((version) => (
+              <FlatButton label={version} labelStyle={{fontSize: '30'}} onClick={() => this.handleClick(this.state.app, version)}
+              style={style} />
+            ))}
+          </ul>
+        </div>
+      </div>
+    </MuiThemeProvider>
+    );
   }
 }
 
