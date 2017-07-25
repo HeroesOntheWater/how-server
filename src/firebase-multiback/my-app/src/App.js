@@ -11,10 +11,9 @@ class App extends Component {
         <div className="App">
           <div className="App-header">
             <img src={logo} className="App-logo" alt="logo" />
-            <h2>Welcome to React</h2>
           </div>
           <p className="App-intro">
-          Enter your registered email and firebase password to look at the backups.
+          Enter your registered email and password to look at the backups.
           </p>
           <Login />
         </div>

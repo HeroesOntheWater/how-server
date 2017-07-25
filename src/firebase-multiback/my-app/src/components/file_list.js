@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
+import RaisedButton from 'material-ui/RaisedButton';
 import request from 'superagent';
 import Calendar from './calendar';
-import moment from 'moment';
-
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import '../App.css';
+import logo from '../views/logo.png';
 const defaultDate = (new Date()).valueOf();
 
 class FileList extends Component {
@@ -66,27 +68,24 @@ class FileList extends Component {
 
   render() {
     return (
-      <div>
-        <h3>Enter Time period</h3>
-        <form onSubmit={this.handleSubmit}>
-          <label>
-          Beginning:
-          <input value={moment(this.state.begin).format("MM/DD/YYYY hh:mm a")} onChange={this.handleBeginChange} type="text" />
-          </label>
-          <label>
-          Ending:
-          <input value={moment(this.state.end).format("MM/DD/YYYY hh:mm a")} onChange={this.handleEndChange} type="text" />
-          </label>
-          <input type="submit" value="Submit" />
-        </form>
-        <ul>
-          {this.state.files.map((timestamp) => (
-            <li onClick={() => this.handleDownload(timestamp)} key={timestamp}>{timestamp}</li>
-          ))}
-        </ul>
-        <Calendar callbackFromParent={this.handleBeginCallback} />
-        <Calendar callbackFromParent={this.handleEndCallback}/>
-      </div>
+      <MuiThemeProvider>
+        <div className="App">
+          <div className="App-header">
+            <img src={logo} className="App-logo" alt="logo" />
+          </div>
+          <h3>Enter Time period</h3>
+          <form onSubmit={this.handleSubmit}>
+            <Calendar callbackFromParent={this.handleBeginCallback} />
+            <Calendar callbackFromParent={this.handleEndCallback}/>
+            <RaisedButton label="Get Results" type="submit" value="Submit" style={{marginLeft:"15"}}/>
+          </form>
+          <ul>
+            {this.state.files.map((timestamp) => (
+              <li onClick={() => this.handleDownload(timestamp)} key={timestamp}>{timestamp}</li>
+            ))}
+          </ul>
+        </div>
+      </MuiThemeProvider>
     );
   }
 }

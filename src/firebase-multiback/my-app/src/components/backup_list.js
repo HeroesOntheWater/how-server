@@ -51,7 +51,6 @@ class BackupList extends Component {
         <div className="App">
           <div className="App-header">
             <img src={logo} className="App-logo" alt="logo" />
-            <h2>Welcome to React</h2>
           </div>
           {this.state.apps.map((app) => (
             <FlatButton label={app} labelStyle={{fontSize: '30'}} onClick={() => this.handleClick(app)}

@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import Datetime from 'react-datetime';
 import '../views/calendar.css';
 
+
 class Calendar extends Component {
 
   handleChange = (event) => {
@@ -10,9 +11,7 @@ class Calendar extends Component {
 
   render() {
     return (
-      <div>
         <Datetime defaultValue={new Date()} onChange={this.handleChange }/>
-      </div>
     );
   }
 }
