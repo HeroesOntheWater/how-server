@@ -26,12 +26,21 @@ class Login extends Component {
   }
 
   handleSubmit = (event) => {
+    if(this.state.email === '') {
+      alert("Email required");
+      return;
+    } else if(this.state.password === '') {
+      alert("Password required");
+      return;
+    }
+
     const url = "http://localhost:8080/login?email=" + this.state.email + "&password=" + this.state.password;
     request.get(url)
       .end((err, res) => {
           if (err) {
             alert("Retry", err);
           } else if (res.body.type === "ERROR") {
+            console.log(res.body.message);
             alert(res.body.data.message);
           } else if (res.body.type === "SUCCESS"){
             history.push('/backups/all', {token: res.body.data});
