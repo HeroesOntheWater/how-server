@@ -5,6 +5,8 @@ import Calendar from './calendar';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import '../App.css';
 import logo from '../views/logo.png';
+import FileTable from './file_table';
+
 const defaultDate = (new Date()).valueOf();
 
 class FileList extends Component {
@@ -19,14 +21,6 @@ class FileList extends Component {
       end: defaultDate,
       files: []
     };
-  }
-
-  handleBeginChange = (event) => {
-    this.setState({begin: event.target.value});
-  }
-
-  handleEndChange = (event) => {
-    this.setState({end: event.target.value});
   }
 
   handleBeginCallback = (timestamp) => {
@@ -79,11 +73,7 @@ class FileList extends Component {
             <Calendar callbackFromParent={this.handleEndCallback}/>
             <RaisedButton label="Get Results" type="submit" value="Submit" style={{marginLeft:"15"}}/>
           </form>
-          <ul>
-            {this.state.files.map((timestamp) => (
-              <li onClick={() => this.handleDownload(timestamp)} key={timestamp}>{timestamp}</li>
-            ))}
-          </ul>
+          <FileTable arrOfTimestamps={this.state.files}/>
         </div>
       </MuiThemeProvider>
     );
