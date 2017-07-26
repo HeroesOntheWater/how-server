@@ -5,6 +5,8 @@ import '../App.css';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import SwipeableViews from 'react-swipeable-views';
 import VersionButtons from './version_buttons';
+import '../App.css';
+import logo from '../views/logo.png';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
@@ -16,7 +18,7 @@ const styles = {
     fontWeight: 400,
   },
   slide: {
-    padding: 10,
+    padding: 10
   },
 };
 
@@ -52,7 +54,10 @@ class BackupList extends Component {
   render() {
     return (
       <MuiThemeProvider>
-        <div>
+      <div className="App">
+        <div className="App-header">
+          <img src={logo} className="App-logo" alt="logo" />
+        </div>
           <Tabs onChange={this.handleChange} value={this.state.slideIndex}>
             {this.state.apps.map((app,index) => (
               <Tab label={app} value={index} labelStyle={{fontSize: '30'}} />
