@@ -3,6 +3,5 @@ node_modules
 **/*.yaml
 backups
 
-.json
 .log
 cluster./
