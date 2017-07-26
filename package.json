@@ -1,0 +1,32 @@
+{
+  "name": "how-server",
+  "version": "1.0.0",
+  "description": "the server project",
+  "main": "index.js",
+  "scripts": {
+    "jn": "jasmine-node",
+    "start": "node index.js",
+    "ready": "git config push.default current && git pull origin master && git add . && git commit -m ",
+    "postready": "git push -u",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "cron": "^1.2.1",
+    "express": "^4.15.3",
+    "js-yaml": "^3.8.4",
+    "jsonwebtoken": "^7.4.1",
+    "moment": "^2.18.1",
+    "nodegit": "^0.18.3",
+    "npm": "^5.3.0",
+    "path": "^0.12.7",
+    "request": "^2.81.0",
+    "socket.io": "^2.0.3"
+  },
+  "devDependencies": {
+    "jasmine-core": "^2.6.4",
+    "jasmine-node": "^1.14.5"
+  }
+}
