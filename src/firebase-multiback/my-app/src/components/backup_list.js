@@ -5,20 +5,89 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import '../App.css';
 import logo from '../views/logo.png';
 import FlatButton from 'material-ui/FlatButton';
+import RaisedButton from 'material-ui/RaisedButton';
+import {Tabs, Tab} from 'material-ui/Tabs';
+import SwipeableViews from 'react-swipeable-views';
+import Slider from 'material-ui/Slider';
+import VersionButtons from './version_buttons';
+
+var injectTapEventPlugin = require("react-tap-event-plugin");
+injectTapEventPlugin();
 
 const history = createBrowserHistory( {
   forceRefresh:true
 });
 
-const style = {
-  height: "100px",
-  width: "51%",
-  clear: "left"
-}
+/*const style = {
+  margin: 20,
+  minWidth: 200
+}*/
+
+const styles = {
+  headline: {
+    fontSize: 24,
+    paddingTop: 16,
+    marginBottom: 12,
+    fontWeight: 400,
+  },
+  slide: {
+    padding: 10,
+  },
+};
 
 class BackupList extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      slideIndex: 0,
+      apps: [],
+      token: this.props.location.state.token
+    };
+  }
 
-  constructor(props){
+  componentWillMount() {
+    const url = 'http://localhost:8080/backup/apps?token=' + this.state.token;
+    request.get(url)
+        .end((err, res) => {
+            if (err) {
+              console.log('Error', err);
+            } else {
+              this.setState({ apps: res.body });
+            }
+        }
+    );
+  }
+
+  handleChange = (value) => {
+    this.setState({
+      slideIndex: value,
+    });
+  };
+
+  render() {
+    return (
+      <MuiThemeProvider>
+        <div>
+          <Tabs onChange={this.handleChange} value={this.state.slideIndex}>
+            {this.state.apps.map((app,index) => (
+              <Tab label={app} value={index} labelStyle={{fontSize: '30'}} />
+            ))}
+          </Tabs>
+          <SwipeableViews index={this.state.slideIndex} onChangeIndex={this.handleChange}>
+            {(!(this.state.apps && this.state.apps.length == 0)) &&
+              this.state.apps.map((app) => (
+                <div>
+                  <VersionButtons app={app} token={this.state.token} />
+                </div>
+              ))
+            }
+          </SwipeableViews>
+      </div>
+    </MuiThemeProvider>
+  );
+}
+
+  /*constructor(props){
     super(props);
     this.state = {
       apps : [],
@@ -53,13 +122,13 @@ class BackupList extends Component {
             <img src={logo} className="App-logo" alt="logo" />
           </div>
           {this.state.apps.map((app) => (
-            <FlatButton label={app} labelStyle={{fontSize: '30'}} onClick={() => this.handleClick(app)}
-            key={app} style={style} />
+            <RaisedButton label={app} onClick={() => this.handleClick(app)}
+            key={app} style={style} labelStyle={{fontSize: '30'}} />
           ))}
       </div>
     </MuiThemeProvider>
     );
-  }
+  }*/
 }
 
 export default BackupList;

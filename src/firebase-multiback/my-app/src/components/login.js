@@ -54,9 +54,9 @@ class Login extends Component {
       <form onSubmit={this.handleSubmit}>
         <TextField value={this.state.email} onChange={this.handleChangeEmail} hintText="Email" />
         <br />
-        <TextField value={this.state.password} onChange={this.handleChangePassword} hintText="Password"/>
+        <TextField type="password" value={this.state.password} onChange={this.handleChangePassword} hintText="Password"/>
         <br />
-        <RaisedButton label="Submit" type="submit" value="Submit" />
+        <RaisedButton label="Submit" type="submit" value="Submit" style={{marginTop:10}}/>
       </form>
     );
   }
