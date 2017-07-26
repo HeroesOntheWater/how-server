@@ -11,19 +11,22 @@ const storage = multer.diskStorage({
     cb(null, './uploads');
   },
   filename: function (req, file, cb) {
-    cb(null, file.fieldname); //+ '-' + Date.now())
+    cb(null, 'prac.yaml');//file.fieldname); //+ '-' + Date.now())
   }
-})
-const upload = multer({ storage: storage }); //global config for multer 
+});
+
+//fileFilter only accept files with a .yaml extension
+const fileFilter = (req, file, cb)=> (/\.yaml$/.test(file.originalname))
+    ? cb(null, true)
+    : cb(null, false);
+
+const upload = multer({ storage: storage, fileFilter: fileFilter }); //global config for multer 
 
 //Get document, or throw exception on error
 class BackupApi {
 
     static getBackups() {
         try {
-            const firebaseSpec = yaml.safeLoad(fs.readFileSync('./src/firebase-multiback/server/prac.yaml', 'utf-8'));
-            const FirebaseBackupper = require('./FirebaseBackupper.js');
-            var f_instance = new FirebaseBackupper(firebaseSpec, "* * * * *");
 
             app.use(cors());
 
@@ -42,19 +45,19 @@ class BackupApi {
               });
             })
 
-            app.post('/uploadConfig', upload.single('prac.yaml'), (req, res, next)=>{
-
-              res.send(req.file);
-            })
-
-            app.get('/hasConfig', (req, res)=>{
-
+            app.post('/uploadConfig', upload.single('file'), (req, res, next)=>{
+              if(!req.file){res.status(404).send({data:'no file was uploaded', error:JSON.stringify(err)}); return;}
+              res.send('config successfully uploaded!');
             })
 
             app.get('/login', function(req, res) {
-              let u = new UserTracker(req.query.email, req.query.password);
-              return u.trySignIntoAllFirebases(0, res);
-
+              if(fs.existsSync('./uploads/prac.yaml')){
+                let u = new UserTracker(req.query.email, req.query.password);
+                let herro = u.trySignIntoAllFirebases(0, res);
+              }
+              else{
+                res.status(500).send('no yaml here');
+              }
             });
 
             app.get('/', (req, res)=>{
