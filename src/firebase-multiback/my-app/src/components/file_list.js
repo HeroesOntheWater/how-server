@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import request from 'superagent';
-import createBrowserHistory  from 'history/createBrowserHistory';
+import Calendar from './calendar';
+import moment from 'moment';
 
-const history = createBrowserHistory ({
-  forceRefresh: true
-});
+const defaultDate = (new Date()).valueOf();
 
 class FileList extends Component {
 
@@ -14,26 +13,29 @@ class FileList extends Component {
       app: this.props.location.state.app,
       version: this.props.location.state.version,
       token: this.props.location.state.token,
-      begin: '',
-      end: '',
+      begin: defaultDate,
+      end: defaultDate,
       files: []
     };
-
-    this.handleBeginChange = this.handleBeginChange.bind(this);
-    this.handleEndChange = this.handleEndChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleDownload = this.handleDownload.bind(this);
   }
 
-  handleBeginChange(event) {
+  handleBeginChange = (event) => {
     this.setState({begin: event.target.value});
   }
 
-  handleEndChange(event) {
+  handleEndChange = (event) => {
     this.setState({end: event.target.value});
   }
 
-  handleSubmit(event) {
+  handleBeginCallback = (timestamp) => {
+    this.setState({begin: timestamp});
+  }
+
+  handleEndCallback = (timestamp) => {
+    this.setState({end: timestamp});
+  }
+
+  handleSubmit = (event) => {
     var url = "http://localhost:8080/backup?token=" + this.state.token + "&app=" + this.state.app +
     "&version=" + this.state.version + "&fromDate=" + this.state.begin + "&toDate=" + this.state.end;
     request.get(url)
@@ -48,7 +50,7 @@ class FileList extends Component {
     event.preventDefault();
   }
 
-  handleDownload(timestamp) {
+  handleDownload = (timestamp) => {
     var url = "http://localhost:8080/backup/download?token=" + this.state.token + "&app=" + this.state.app +
     "&version=" + this.state.version + "&timestamp=" + timestamp;
     request.get(url)
@@ -59,7 +61,7 @@ class FileList extends Component {
               window.open(url);
             }
         }
-    )
+      );
   }
 
   render() {
@@ -69,11 +71,11 @@ class FileList extends Component {
         <form onSubmit={this.handleSubmit}>
           <label>
           Beginning:
-          <input value={this.state.begin} onChange={this.handleBeginChange} type="text" />
+          <input value={moment(this.state.begin).format("MM/DD/YYYY hh:mm a")} onChange={this.handleBeginChange} type="text" />
           </label>
           <label>
           Ending:
-          <input value={this.state.end} onChange={this.handleEndChange} type="text" />
+          <input value={moment(this.state.end).format("MM/DD/YYYY hh:mm a")} onChange={this.handleEndChange} type="text" />
           </label>
           <input type="submit" value="Submit" />
         </form>
@@ -82,6 +84,8 @@ class FileList extends Component {
             <li onClick={() => this.handleDownload(timestamp)} key={timestamp}>{timestamp}</li>
           ))}
         </ul>
+        <Calendar callbackFromParent={this.handleBeginCallback} />
+        <Calendar callbackFromParent={this.handleEndCallback}/>
       </div>
     );
   }
