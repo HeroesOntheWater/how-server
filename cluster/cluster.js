@@ -1,15 +1,33 @@
 var cluster = require('cluster');
 var bodyParser = require('body-parser');
+var path = require('path');
+var npm = require('npm');
 
 if(cluster.isMaster){
+    var git = require('nodegit');
     var app = require('express')();
     app.use(bodyParser.json());
 
     var numCPUs = require('os').cpus().length;
     var worker_objects = {};
 
+    // use a bunch of .then to stack operations
     app.post('/run', function(req, res){
-        if(req.body.command_set == "run"){
+        if(req.body.github_link){
+            console.log(req.body.github_link);
+            git.Clone(req.body.github_link, __dirname + req.body.local_path).catch(function(err){
+                console.log(err);
+            }).then(function(repo){
+                console.log("complete!");
+                console.log(repo);
+
+                var worker = cluster.fork();
+                worker_objects[worker.process.pid] = req.body.app_name;
+                console.log(worker_objects);
+                worker.send(req.body);
+            });
+        }
+        else if(req.body.command_set == "run"){
             var worker = cluster.fork();
             worker_objects[worker.process.pid] = req.body.app_name;
             console.log(worker_objects);
@@ -36,7 +54,7 @@ if(cluster.isMaster){
 
     var port = 1111;
     var server = app.listen(port, function(){
-        //console.log('Master ' + process.pid + ' is listening on port ' + port);
+        console.log('Master ' + process.pid + ' is listening on port ' + port);
     });
 
     //cluster.on('online', function(worker){
@@ -52,9 +70,11 @@ if(cluster.isMaster){
 else {
     process.on('message', function(msg) {
         if(msg.command_set == "run"){
-            var app = require(msg.app_name);
-            app.runny();
-            process.send(msg);
+            if(msg.app_name){
+                var app = require(path.resolve(__dirname + msg.local_path + msg.app_name));
+                app.runny();
+                process.send(msg);
+            }
         }
         if(msg.command_set == "kill"){
             process.kill(process.pid, 'SIGHUP');

@@ -2,5 +2,5 @@
     "github_link":"", 
     "local_path":"", 
     "command_set":"run", 
-    "app_name":"./testapp.js"
+    "app_name":"/testapp"
 }
