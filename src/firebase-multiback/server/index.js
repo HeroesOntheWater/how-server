@@ -5,9 +5,16 @@ const UserTracker = require('./UserTracker.js');
 const app = express();
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
-const secret = require('./secret.js');
-
-console.log(__dirname, __filename)
+const multer  = require('multer');
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './uploads');
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.fieldname); //+ '-' + Date.now())
+  }
+})
+const upload = multer({ storage: storage }); //global config for multer 
 
 //Get document, or throw exception on error
 class BackupApi {
@@ -22,7 +29,8 @@ class BackupApi {
 
             //verify tokens
             app.use((req, res, next)=>{
-              if(req.path.includes('login')){
+              if(req.path.includes('login') 
+                || req.path.includes('uploadConfig')){
                 next();
                 return;
               }
@@ -34,17 +42,26 @@ class BackupApi {
               });
             })
 
+            app.post('/uploadConfig', upload.single('prac.yaml'), (req, res, next)=>{
+
+              res.send(req.file);
+            })
+
+            app.get('/hasConfig', (req, res)=>{
+
+            })
+
             app.get('/login', function(req, res) {
               let u = new UserTracker(req.query.email, req.query.password);
               return u.trySignIntoAllFirebases(0, res);
 
             });
 
-            app.get('/', function(req, res){
+            app.get('/', (req, res)=>{
               res.send('hello world');
             })
 
-            app.get('/backup', function(req, res) {
+            app.get('/backup', (req, res)=>{
 
                 // retrieval of correct timestamps
                 var returned_arr = [];
@@ -97,7 +114,7 @@ class BackupApi {
             });
 
             // download file from given timestamp
-            app.get('/backup/download', function(req, res) {
+            app.get('/backup/download', (req, res)=>{
                 var timestamp = req.query.timestamp;
                 var app = req.query.app;
                 var version = req.query.version || ''
@@ -110,7 +127,7 @@ class BackupApi {
             });
 
             // return app names in backup folder
-            app.get('/backup/apps', function(req, res) {
+            app.get('/backup/apps', (req, res)=>{
               var path = "./backups";
               // gets array of everything in backups and filters for directories
               var directories = fs.readdirSync(path).filter(function(file){
@@ -121,7 +138,7 @@ class BackupApi {
             });
 
             // return versions in an app --> prints no versions if none exist
-            app.get('/backup/versions', function(req, res) {
+            app.get('/backup/versions', (req, res)=>{
               var app = req.query.app;
               var path = "./backups/" + app;
               var versions = fs.readdirSync(path).filter(function(file){
@@ -136,7 +153,7 @@ class BackupApi {
             });
 
             // get all files within an app
-            app.get('/backup/app/all', function(req, res) {
+            app.get('/backup/app/all', (req, res)=>{
               var app = req.query.app;
               var path = "./backups/" + app;
               var timestamps = [];
