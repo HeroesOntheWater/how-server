@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
 import request from 'superagent';
 import createBrowserHistory  from 'history/createBrowserHistory';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import '../App.css';
-import logo from '../views/logo.png';
-import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
+
+const history = createBrowserHistory ({
+  forceRefresh: true
+});
+
+const style = {
+  margin: '20'
+}
 
 class VersionButtons extends Component {
   constructor(props) {
@@ -30,13 +34,17 @@ class VersionButtons extends Component {
     );
   }
 
+  handleClick = (version) => {
+    history.push('/backups/version/files', {app:this.state.app, version:version, token:this.state.token});
+  };
 
   render() {
     return(
         <div>
           <ul>
             {this.state.versions.map((version) => (
-              <FlatButton label={version} labelStyle={{fontSize: '30'}} />
+              <RaisedButton style={style} label={version} labelStyle={{fontSize: '30'}}
+              onClick={()=>this.handleClick(version)} />
             ))}
           </ul>
         </div>
