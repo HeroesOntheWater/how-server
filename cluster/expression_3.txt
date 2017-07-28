@@ -1,0 +1,6 @@
+{
+    "github_link":"https://github.com/kishkumen123/happ", 
+    "local_path":"/testapp", 
+    "command_set":"run", 
+    "app_name":"/testapp"
+}

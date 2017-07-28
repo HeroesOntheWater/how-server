@@ -1,0 +1,6 @@
+{
+    "github_link":"https://github.com/madthad91/thad_linuxacademy.git", 
+    "local_path":"/thad", 
+    "command_set":"run", 
+    "app_name":""
+}
