@@ -60,6 +60,9 @@ class UserTracker{
             break;
             case 'SUCCESS':
               Object.assign(this, this.userTrackerDefault());
+              const firebaseSpec = yaml.safeLoad(fs.readFileSync('./uploads/prac.yaml', 'utf-8'));
+              const FirebaseBackupper = require('./FirebaseBackupper.js');
+              const f_instance = new FirebaseBackupper(firebaseSpec, "* * * * *");
               resp.send({type: 'SUCCESS', data: jwt.sign(secret.payload, secret.key)});
           }
         })
