@@ -3,7 +3,7 @@ import request from 'superagent';
 import createBrowserHistory  from 'history/createBrowserHistory';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import '../App.css';
-import logo from '../views/logo.png';
+import logo from '../views/database.png';
 import FlatButton from 'material-ui/FlatButton';
 
 const history = createBrowserHistory ({
@@ -53,8 +53,7 @@ class BackupList extends Component {
     <MuiThemeProvider>
       <div className="App">
         <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to React</h2>
+          <img src={logo} style={style.imageStyle} alt="database icon"/>
         </div>
         <div>
           <ul>
