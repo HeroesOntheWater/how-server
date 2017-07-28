@@ -4,14 +4,14 @@ import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 
 class BackupDropdown extends Component {
-  
+
   constructor(props) {
     super(props);
     this.state = {
       token: this.props.token,
       apps: [],
       value: 0
-    }
+    };
   }
 
   componentWillMount() {
@@ -22,6 +22,7 @@ class BackupDropdown extends Component {
               console.log('Error', err);
             } else {
               this.setState({ apps: res.body });
+              this.props.callbackFromParent(this.state.apps[0])
             }
         }
     );
@@ -29,6 +30,7 @@ class BackupDropdown extends Component {
 
   handleChange = (event, index, value) => {
     this.setState({value});
+    this.props.callbackFromParent(this.state.apps[value]);
   }
 
   render() {
