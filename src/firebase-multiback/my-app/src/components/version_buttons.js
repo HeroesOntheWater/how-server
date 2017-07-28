@@ -35,6 +35,7 @@ class VersionButtons extends Component {
   }
 
   handleClick = (version) => {
+    console.log(this.state.app);
     history.push('/backups/version/files', {app:this.state.app, version:version, token:this.state.token});
   };
 

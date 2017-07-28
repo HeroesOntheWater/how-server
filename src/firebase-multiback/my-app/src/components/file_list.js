@@ -34,7 +34,6 @@ class FileList extends Component {
   }
 
   handleSubmit = (event) => {
-    this.setState({loading:true}, () => {
       var url = "http://localhost:8080/backup?token=" + this.state.token + "&app=" + this.state.app +
       "&version=" + this.state.version + "&fromDate=" + this.state.begin + "&toDate=" + this.state.end;
       request.get(url)
@@ -49,8 +48,7 @@ class FileList extends Component {
         );
         event.preventDefault();
       }
-    )
-  }
+
 
   render() {
     return (
@@ -67,11 +65,12 @@ class FileList extends Component {
           </form>
           <FileTable arrOfTimestamps={this.state.files} app={this.state.app} version={this.state.version}
             token={this.state.token}/>
-            {this.state.loading && <ProgressBar />}
         </div>
       </MuiThemeProvider>
     );
   }
 }
+
+//            {this.state.loading && <ProgressBar />}
 
 export default FileList;
