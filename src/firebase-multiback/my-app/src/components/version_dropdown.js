@@ -23,6 +23,7 @@ class BackupDropdown extends Component {
               console.log('Error', err);
             } else {
               this.setState({ versions: res.body });
+              this.props.callbackFromParent(this.state.versions[0]);
             }
         }
     );
@@ -42,6 +43,7 @@ class BackupDropdown extends Component {
   }
 
   handleChange = (event, index, value) => {
+    this.props.callbackFromParent(this.state.versions[value]);
     this.setState({value});
   }
 
