@@ -17,13 +17,13 @@ class UserTracker{
       this.user['password'] = password;
     }
     this.fb_refs = [];
-    this.firebase_spec = yaml.safeLoad(fs.readFileSync('./src/firebase-multiback/server/prac.yaml', 'utf-8'));
-    if (this.firebase_spec['General']) 
+    this.firebase_spec = yaml.safeLoad(fs.readFileSync('./uploads/prac.yaml', 'utf-8'));
+    if (this.firebase_spec['General'])
           delete this.firebase_spec['General'];
-    
+
     this.fb_keys = Object.keys(this.firebase_spec);
     if(this.fb_keys.length ==0) return;
-    
+
   }
 
   userTrackerDefault(){
@@ -66,7 +66,7 @@ class UserTracker{
               resp.send({type: 'SUCCESS', data: jwt.sign(secret.payload, secret.key)});
           }
         })
-    
+
   }
 
   signIn(idx){
@@ -102,7 +102,7 @@ class UserTracker{
     }
   }
 
-  
+
 }
 
 module.exports = UserTracker
