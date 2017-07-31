@@ -63,6 +63,7 @@ class BackupList extends Component {
             alert('Error', err);
           } else {
             this.setState({files: res.body});
+            console.log(url);
           }
         }
       );

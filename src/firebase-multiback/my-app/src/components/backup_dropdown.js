@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import request from 'superagent';
-import DropDownMenu from 'material-ui/DropDownMenu';
-import MenuItem from 'material-ui/MenuItem';
+import DropdownList from 'react-widgets/lib/DropdownList';
+import 'react-widgets/lib/less/react-widgets.less';
 
 class BackupDropdown extends Component {
 
@@ -10,7 +10,7 @@ class BackupDropdown extends Component {
     this.state = {
       token: this.props.token,
       apps: [],
-      value: 0
+      selectedApp: ''
     };
   }
 
@@ -21,27 +21,26 @@ class BackupDropdown extends Component {
             if (err) {
               console.log('Error', err);
             } else {
-              this.setState({ apps: res.body });
+              this.setState({apps: res.body});
+              this.setState({selectedApp: this.state.apps[0]})
               this.props.callbackFromParent(this.state.apps[0])
             }
         }
     );
   }
 
-  handleChange = (event, index, value) => {
-    this.setState({value});
-    this.props.callbackFromParent(this.state.apps[value]);
+  handleChange = (event) => {
+    this.setState({selectedApp: event});
+    this.props.callbackFromParent(event);
   }
 
   render() {
     return(
-      <DropDownMenu value={this.state.value} onChange={this.handleChange} style={{width:200}}>
+      <div>
         {(!(this.state.apps && this.state.apps.length === 0)) &&
-          this.state.apps.map((app, index) => (
-            <MenuItem value={index} primaryText={app} />
-          ))
+          <DropdownList data={this.state.apps} value={this.state.selectedApp} onChange={this.handleChange}/>
         }
-      </DropDownMenu>
+      </div>
     )
   }
 }

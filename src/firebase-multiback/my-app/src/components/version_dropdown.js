@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import request from 'superagent';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
+import DropdownList from 'react-widgets/lib/DropdownList';
 
-class BackupDropdown extends Component {
+class VersionDropdown extends Component {
 
   constructor(props) {
     super(props);
@@ -11,7 +12,7 @@ class BackupDropdown extends Component {
       token: this.props.token,
       app: this.props.app,
       versions: [],
-      value: 0
+      selectedVersion: ''
     }
   }
 
@@ -23,6 +24,7 @@ class BackupDropdown extends Component {
               console.log('Error', err);
             } else {
               this.setState({ versions: res.body });
+              this.setState({ selectedVersion: this.state.versions[0]});
               this.props.callbackFromParent(this.state.versions[0]);
             }
         }
@@ -30,6 +32,9 @@ class BackupDropdown extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    if(this.props.app === nextProps.app) {
+      return;
+    }
     const url = 'http://localhost:8080/backup/versions?app=' + nextProps.app + '&token=' + this.state.token;
     request.get(url)
         .end((err, res) => {
@@ -37,27 +42,28 @@ class BackupDropdown extends Component {
               console.log('Error', err);
             } else {
               this.setState({ versions: res.body });
+              this.setState({ selectedVersion: this.state.versions[0]});
+              this.props.callbackFromParent(this.state.versions[0]);
             }
         }
     );
   }
 
-  handleChange = (event, index, value) => {
-    this.props.callbackFromParent(this.state.versions[value]);
-    this.setState({value});
+  handleChange = (event) => {
+    console.log(event);
+    this.setState({selectedVersion: event});
+    this.props.callbackFromParent(event);
   }
 
   render() {
     return(
-        <DropDownMenu value={this.state.value} onChange={this.handleChange} style={{width:200}}>
+      <div>
         {(!(this.state.versions && this.state.versions.length === 0)) &&
-          this.state.versions.map((version, index) => (
-            <MenuItem value={index} primaryText={version} />
-          ))
+          <DropdownList data={this.state.versions} value={this.state.selectedVersion} onChange={this.handleChange}/>
         }
-        </DropDownMenu>
+      </div>
     )
   }
 }
 
-export default BackupDropdown;
+export default VersionDropdown;
