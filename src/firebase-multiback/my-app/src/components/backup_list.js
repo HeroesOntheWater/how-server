@@ -7,6 +7,7 @@ import BackupDropdown from './backup_dropdown';
 import VersionDropdown from './version_dropdown';
 import Calendar from './calendar';
 import Moment from 'moment';
+import FileTable from './file_table';
 import request from 'superagent';
 
 import RaisedButton from 'material-ui/RaisedButton';
@@ -49,14 +50,20 @@ class BackupList extends Component {
 
   handleEndDateCallback = (date) => {
     this.setState({endDate: date});
-    console.log(this.state.beginDate);
   }
 
   handleSubmit = (event) => {
-    console.log(this.state.app);
-    console.log(this.state.version);
-    console.log(this.state.beginDate);
-    console.log(this.state.endDate);
+    var url = "http://localhost:8080/backup?token=" + this.state.token + "&app=" + this.state.app +
+    "&version=" + this.state.version + "&fromDate=" + this.state.beginDate + "&toDate=" + this.state.endDate;
+    request.get(url)
+      .end((err, res) => {
+          if (err) {
+            alert('Error', err);
+          } else {
+            this.setState({files: res.body});
+          }
+        }
+      );
     event.preventDefault();
   }
 
@@ -74,6 +81,8 @@ class BackupList extends Component {
         <Calendar callbackFromParent={this.handleBeginDateCallback}/>
         <Calendar callbackFromParent={this.handleEndDateCallback} />
         <RaisedButton label="Get Results" onClick={this.handleSubmit}/>
+        <FileTable arrOfTimestamps={this.state.files} token={this.state.token} app={this.state.app}
+         version={this.state.version} />
       </div>
     </MuiThemeProvider>
   );
