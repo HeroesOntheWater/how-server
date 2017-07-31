@@ -1,8 +1,10 @@
 body {
-  background-image: url('./views/flag-background.png');
-  background-size: 100% auto;
-  background-position: center top;
+  background-image: url('./views/background.jpeg');
+  background-position: center center;
+  background-repeat: no-repeat;
   background-attachment: fixed;
+  background-size: cover;
+  background-color: white;
 }
 
 .App {

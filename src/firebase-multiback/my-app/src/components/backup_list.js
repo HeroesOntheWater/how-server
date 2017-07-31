@@ -9,7 +9,6 @@ import Calendar from './calendar';
 import Moment from 'moment';
 import FileTable from './file_table';
 import request from 'superagent';
-
 import RaisedButton from 'material-ui/RaisedButton';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
@@ -18,6 +17,9 @@ const styles  = {
   imageStyle: {
     height: '40px',
     width: 'auto'
+  },
+  selection: {
+    display: 'inline-block'
   }
 }
 
@@ -74,15 +76,17 @@ class BackupList extends Component {
         <div className="App-header">
           <img src={logo} style={styles.imageStyle} alt="database icon"/>
         </div>
-        <BackupDropdown token={this.state.token} callbackFromParent={this.handleBackupCallback}/>
-        {(this.state.app != null) &&
-          <VersionDropdown token={this.state.token} app={this.state.app} callbackFromParent={this.handleVersionCallback}/>
-        }
-        <Calendar callbackFromParent={this.handleBeginDateCallback}/>
-        <Calendar callbackFromParent={this.handleEndDateCallback} />
-        <RaisedButton label="Get Results" onClick={this.handleSubmit}/>
-        <FileTable arrOfTimestamps={this.state.files} token={this.state.token} app={this.state.app}
-         version={this.state.version} />
+        <div >
+          <BackupDropdown token={this.state.token} callbackFromParent={this.handleBackupCallback}/>
+          {(this.state.app != null) &&
+            <VersionDropdown token={this.state.token} app={this.state.app} callbackFromParent={this.handleVersionCallback}/>
+          }
+          <Calendar callbackFromParent={this.handleBeginDateCallback}/>
+          <Calendar callbackFromParent={this.handleEndDateCallback} />
+          <RaisedButton label="Get Results" onClick={this.handleSubmit}/>
+          <FileTable arrOfTimestamps={this.state.files} token={this.state.token} app={this.state.app}
+          version={this.state.version} />
+        </div>
       </div>
     </MuiThemeProvider>
   );
