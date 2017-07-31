@@ -1,7 +1,22 @@
 import React, { Component } from 'react';
 import request from 'superagent';
 import DropdownList from 'react-widgets/lib/DropdownList';
-import 'react-widgets/lib/less/react-widgets.less';
+import 'react-widgets/dist/css/react-widgets.css';
+
+const style = {
+  div: {
+    width: '200px',
+    height: 'auto',
+    display: 'inline-block',
+    margin: '20px'
+  },
+  dropDown: {
+    width: '200px',
+    height: 'auto',
+    display: 'inline-block'
+  }
+}
+
 
 class BackupDropdown extends Component {
 
@@ -36,7 +51,7 @@ class BackupDropdown extends Component {
 
   render() {
     return(
-      <div>
+      <div style={style.div}>
         {(!(this.state.apps && this.state.apps.length === 0)) &&
           <DropdownList data={this.state.apps} value={this.state.selectedApp} onChange={this.handleChange}/>
         }
