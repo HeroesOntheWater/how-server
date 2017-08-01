@@ -25,7 +25,7 @@ const styles  = {
     paddingTop: '20px'
   },
   submit: {
-    verticalAlign: 'top',
+    verticalAlign: 'bottom',
     width: '200px',
     height: '38px',
     margin: '20px'
@@ -90,12 +90,21 @@ class BackupList extends Component {
           <img src={logo} style={styles.imageStyle} alt="database icon"/>
         </div>
         <div style={styles.row}>
-          <BackupDropdown token={this.state.token} callbackFromParent={this.handleBackupCallback}/>
-          {(this.state.app != null) &&
+          <div style={{display:'inline-block'}}>
+            <h3>Select a database</h3>
+            <BackupDropdown token={this.state.token} callbackFromParent={this.handleBackupCallback}/>
+          </div>
+          <div style={{display:'inline-block'}}>
+            <h3>Select a version</h3>
+            {(this.state.app != null) &&
             <VersionDropdown token={this.state.token} app={this.state.app} callbackFromParent={this.handleVersionCallback}/>
-          }
-          <Calendar callbackFromParent={this.handleBeginDateCallback}/>
-          <Calendar callbackFromParent={this.handleEndDateCallback} />
+            }
+          </div>
+          <div style={{display:'inline-block', verticalAlign:'top'}}>
+            <h3>Select begin and end date/time</h3>
+            <Calendar callbackFromParent={this.handleBeginDateCallback}/>
+            <Calendar callbackFromParent={this.handleEndDateCallback} />
+          </div>
           <RaisedButton label="Get Results" onClick={this.handleSubmit} style={styles.submit} labelStyle={styles.label}/>
         </div>
         <FileTable arrOfTimestamps={this.state.files} token={this.state.token} app={this.state.app}

@@ -16,7 +16,8 @@ const styles = {
     display: 'block',
     width: '80%',
     margin: '0 auto',
-    height: '70%'
+    height: '65%',
+    border: '2px solid #BEBEBE'
   },
   table: {
     height: '100%'
@@ -79,7 +80,7 @@ export default class FileTable extends Component {
   render() {
     return (
       <div style={styles.div}>
-        <Table height='100%' bodyStyle={{height:'90%'}} wrapperStyle={styles.table} height='500px' selectable={true} multiSelectable={true} onRowSelection={this.handleRowSelection}>
+        <Table height='100%' bodyStyle={{height:'91%'}} wrapperStyle={styles.table} height='500px' selectable={true} multiSelectable={true} onRowSelection={this.handleRowSelection}>
           <TableHeader enableSelectAll={true}>
             <TableRow>
               <TableHeaderColumn>Number</TableHeaderColumn>
