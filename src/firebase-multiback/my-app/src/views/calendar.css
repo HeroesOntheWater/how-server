@@ -4,9 +4,11 @@
 
 
 .rdt input {
-  width: 190px;
+  width: 200px;
   height: 38px;
-  font-size: 18px;
+  font-size: 14px;
+  font-family: sans-serif;
+  text-align: center;
 }
 
 .rdtPicker {

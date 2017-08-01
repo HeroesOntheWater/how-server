@@ -79,7 +79,7 @@ export default class FileTable extends Component {
   render() {
     return (
       <div style={styles.div}>
-        <Table height='100%' wrapperStyle={styles.table} height='500px' selectable={true} multiSelectable={true} onRowSelection={this.handleRowSelection}>
+        <Table height='100%' bodyStyle={{height:'90%'}} wrapperStyle={styles.table} height='500px' selectable={true} multiSelectable={true} onRowSelection={this.handleRowSelection}>
           <TableHeader enableSelectAll={true}>
             <TableRow>
               <TableHeaderColumn>Number</TableHeaderColumn>

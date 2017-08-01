@@ -12,7 +12,8 @@ const style = {
     fontFamily: 'sans-serif'
  },
  calendar: {
-   backgroundColor: 'green'
+   backgroundColor: 'green',
+   fontSize: '18px'
  }
 }
 
