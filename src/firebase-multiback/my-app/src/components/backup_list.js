@@ -20,6 +20,18 @@ const styles  = {
   },
   selection: {
     display: 'inline-block'
+  },
+  row: {
+    paddingTop: '20px'
+  },
+  submit: {
+    verticalAlign: 'top',
+    width: '200px',
+    height: '38px',
+    margin: '20px'
+  },
+  label: {
+    top: '20%'
   }
 }
 
@@ -77,17 +89,17 @@ class BackupList extends Component {
         <div className="App-header">
           <img src={logo} style={styles.imageStyle} alt="database icon"/>
         </div>
-        <div >
+        <div style={styles.row}>
           <BackupDropdown token={this.state.token} callbackFromParent={this.handleBackupCallback}/>
           {(this.state.app != null) &&
             <VersionDropdown token={this.state.token} app={this.state.app} callbackFromParent={this.handleVersionCallback}/>
           }
           <Calendar callbackFromParent={this.handleBeginDateCallback}/>
           <Calendar callbackFromParent={this.handleEndDateCallback} />
-          <RaisedButton label="Get Results" onClick={this.handleSubmit}/>
-          <FileTable arrOfTimestamps={this.state.files} token={this.state.token} app={this.state.app}
-          version={this.state.version} />
+          <RaisedButton label="Get Results" onClick={this.handleSubmit} style={styles.submit} labelStyle={styles.label}/>
         </div>
+        <FileTable arrOfTimestamps={this.state.files} token={this.state.token} app={this.state.app}
+        version={this.state.version} />
       </div>
     </MuiThemeProvider>
   );

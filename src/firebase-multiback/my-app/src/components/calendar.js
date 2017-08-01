@@ -7,13 +7,13 @@ const style = {
     width: '200px',
     height: 'auto',
     display: 'inline-block',
-    margin: '20px'
-  },
-  dropDown: {
-    width: '200px',
-    height: 'auto',
-    display: 'inline-block'
-  }
+    margin: '20px',
+    verticalAlign: 'top',
+    fontFamily: 'sans-serif'
+ },
+ calendar: {
+   backgroundColor: 'green'
+ }
 }
 
 class Calendar extends Component {
@@ -25,7 +25,7 @@ class Calendar extends Component {
   render() {
     return (
       <div style={style.div}>
-        <Datetime defaultValue={new Date()} onChange={this.handleChange }/>
+        <Datetime style={style.calendar} defaultValue={new Date()} onChange={this.handleChange }/>
       </div>
     );
   }
