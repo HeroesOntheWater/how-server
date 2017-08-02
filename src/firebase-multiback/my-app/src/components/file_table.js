@@ -17,7 +17,7 @@ const styles = {
     width: '80%',
     margin: '0 auto',
     height: '65%',
-    border: '2px solid #BEBEBE'
+    boxShadow: '0 2px 5px 0 rgba(0,0,0,0.16) ,0 2px 10px 0 rgba(0,0,0,0.12)'
   },
   table: {
     height: '100%'
@@ -80,7 +80,7 @@ export default class FileTable extends Component {
   render() {
     return (
       <div style={styles.div}>
-        <Table height='100%' bodyStyle={{height:'91%'}} wrapperStyle={styles.table} height='500px' selectable={true} multiSelectable={true} onRowSelection={this.handleRowSelection}>
+        <Table bodyStyle={{height:'93%'}} wrapperStyle={styles.table} selectable={true} multiSelectable={true} onRowSelection={this.handleRowSelection}>
           <TableHeader enableSelectAll={true}>
             <TableRow>
               <TableHeaderColumn>Number</TableHeaderColumn>
@@ -100,7 +100,7 @@ export default class FileTable extends Component {
               ))}
           </TableBody>
         </Table>
-        <RaisedButton label="Download" onClick={this.handleClick} style={{marginTop: '15'}}/>
+        <RaisedButton label="Download" onClick={this.handleClick} style={{marginTop: '30'}}/>
       </div>
     );
   }

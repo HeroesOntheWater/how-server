@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import '../App.css';
-import '../App.css';
 import logo from '../views/database.png';
 import BackupDropdown from './backup_dropdown';
 import VersionDropdown from './version_dropdown';
 import Calendar from './calendar';
-import Moment from 'moment';
 import FileTable from './file_table';
+import Moment from 'moment';
 import request from 'superagent';
 import RaisedButton from 'material-ui/RaisedButton';
 import injectTapEventPlugin from 'react-tap-event-plugin';

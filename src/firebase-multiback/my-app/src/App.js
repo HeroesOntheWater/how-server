@@ -18,8 +18,7 @@ const style  = {
     right: 'auto',
     display: 'inline-block',
     marginTop: '5%',
-    boxShadow: '20px 20px 5px #a6a6a6',
-    border: '2px #888888 solid'
+    boxShadow: '0 2px 5px 0 rgba(0,0,0,0.16) ,0 2px 10px 0 rgba(0,0,0,0.12)'
   },
   titleStyle: {
     fontSize: '30px',

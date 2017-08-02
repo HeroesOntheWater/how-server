@@ -23,7 +23,7 @@ const style = {
     height: '30px'
   },
   buttonStyle: {
-    marginTop: 25,
+    marginTop: '25',
     width: '200px',
     height: '70px'
   },
@@ -31,7 +31,8 @@ const style = {
     fontSize: '40px'
   },
   overlayStyle: {
-    height: '50px'
+    height: '70px',
+    marginTop: '2%'
   }
 }
 
@@ -86,7 +87,7 @@ class Login extends Component {
         style={style.textFieldStyle} inputStyle={style.textStyle} hintStyle={style.textStyle}/>
         <br />
         <RaisedButton label="Submit" type="submit" value="Submit" style={style.buttonStyle}
-        labelStyle={style.labelStyle} overlayStyle={style.overlayStyle}/>
+        labelStyle={style.labelStyle} overlayStyle={style.overlayStyle} />
       </form>
     );
   }
