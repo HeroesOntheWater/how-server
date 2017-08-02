@@ -6,6 +6,7 @@ const app = express();
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const multer  = require('multer');
+const secret = require('./secret');
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, './uploads');
@@ -20,7 +21,7 @@ const fileFilter = (req, file, cb)=> (/\.yaml$/.test(file.originalname))
     ? cb(null, true)
     : cb(null, false);
 
-const upload = multer({ storage: storage, fileFilter: fileFilter }); //global config for multer 
+const upload = multer({ storage: storage, fileFilter: fileFilter }); //global config for multer
 
 //Get document, or throw exception on error
 class BackupApi {

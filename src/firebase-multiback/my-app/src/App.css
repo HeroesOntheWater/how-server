@@ -1,12 +1,15 @@
 body {
-  background-image: url('./views/flag-background.png');
-  background-size: 100% auto;
-  background-position: center top;
+  background-image: url('./views/background.jpeg');
+  background-position: center center;
+  background-repeat: no-repeat;
   background-attachment: fixed;
+  background-size: cover;
+  background-color: white;
 }
 
 .App {
   text-align: center;
+  height: 100vh;
 }
 
 /*.App-logo {
@@ -16,7 +19,7 @@ body {
 
 .App-header {
   background-color: #222;
-  height: 50px;
+  height: 100px;
   padding: 20px;
   color: white;
 }
