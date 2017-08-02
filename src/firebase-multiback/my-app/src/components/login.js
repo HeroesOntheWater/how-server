@@ -28,11 +28,11 @@ const style = {
     height: '70px'
   },
   labelStyle: {
-    fontSize: '40px'
+    fontSize: '40px',
+    lineHeight: '70px'
   },
   overlayStyle: {
-    height: '70px',
-    marginTop: '2%'
+    height: '70px'
   }
 }
 
