@@ -42,7 +42,23 @@ class Login extends Component {
     this.state = {
       email : '',
       password : '',
+      add_config: false
     };
+    this.determineView();
+  }
+
+  determineView = () =>{
+    request
+    .get('http://localhost:8080/hasConfig')
+    .end((err, res)=>{
+      // if (err || !res.ok) {
+      //   alert('Oh no! error');
+      // } else {
+        (res.body)
+          ? this.setState({add_config: false})
+          : this.setState({add_config: true})
+      // }
+    });
   }
 
   handleChangeEmail = (event) => {
@@ -80,6 +96,7 @@ class Login extends Component {
   render() {
     return (
       <form style={style.formStyle} onSubmit={this.handleSubmit}>
+<<<<<<< HEAD
         <TextField value={this.state.email} onChange={this.handleChangeEmail} hintText="Email" multiLine={true}
         style={style.textFieldStyle} inputStyle={style.textStyle} textareaStyle={style.textAreaStyle} hintStyle={style.textStyle}/>
         <br />
@@ -88,6 +105,28 @@ class Login extends Component {
         <br />
         <RaisedButton label="Submit" type="submit" value="Submit" style={style.buttonStyle}
         labelStyle={style.labelStyle} overlayStyle={style.overlayStyle} />
+=======
+      {
+        (this.state.add_config)
+        ? (()=>{
+            return <div><input type="file"/>click to add file</div>
+          })()
+        : (()=>{
+            return(
+              <div>
+              <TextField value={this.state.email} onChange={this.handleChangeEmail} hintText="Email" multiLine={true}
+              style={style.textFieldStyle} inputStyle={style.textStyle} textareaStyle={style.textAreaStyle} hintStyle={style.textStyle}/>
+              <br />
+              <TextField type="password" value={this.state.password} onChange={this.handleChangePassword} hintText="Password"
+              style={style.textFieldStyle} inputStyle={style.textStyle} hintStyle={style.textStyle}/>
+              <br />
+              <RaisedButton label="Submit" type="submit" value="Submit" style={style.buttonStyle}
+              labelStyle={style.labelStyle} overlayStyle={style.overlayStyle}/>
+              </div>
+            )
+          })()
+      }
+>>>>>>> 5ecc43509d0059fbe55416a56921f68c069d3669
       </form>
     );
   }

@@ -33,11 +33,13 @@ class BackupApi {
 
             //verify tokens
             app.use((req, res, next)=>{
-              if(req.path.includes('login')
-                || req.path.includes('uploadConfig')){
+              if(req.path.includes('login') 
+                || req.path.includes('uploadConfig')
+                || req.path.includes('hasConfig')){
                 next();
                 return;
               }
+              if(!req.query.token){res.status(404).send('This page does not exist. Down for maintenance'); return;}
               jwt.verify(req.query.token, secret.key, function(err, decoded) {
                 if(err) {
                   return res.status(404).send('This page does not exist. Down for maintenance');
@@ -50,6 +52,8 @@ class BackupApi {
               if(!req.file){res.status(404).send({data:'no file was uploaded', error:JSON.stringify(err)}); return;}
               res.send('config successfully uploaded!');
             })
+
+            app.get('/hasConfig', (req, res, next)=>fs.existsSync('./uploads/prac.yaml') ? res.send(true) : res.status(404).send('This page does not exist. Down for maintenance'));
 
             app.get('/login', function(req, res) {
               if(fs.existsSync('./uploads/prac.yaml')){
