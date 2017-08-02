@@ -27,37 +27,41 @@ class FirebaseBackupper {
 
     // func(firebase_endpoint, secret_key, version)
     makeBackup(config, fb_db_name) {
-        const pathPrefix = 'backups/';
-        let path = "";
-        let url = "";
-        if (Object.keys(config).length === 0) {
-            console.log('Not enough arguments in ' + fb_db_name + "\'s config");
-            return;
-        }
-
-        path = (config.hasOwnProperty('version')) ? `${fb_db_name}/${config['version']}` : `${fb_db_name}/default`;
-        path = pathPrefix + path;
-        url = `https://${fb_db_name}.firebaseio.com/.json?format=export&auth=${config['secret_key']}`;
-        request(url, (err, resp, body) => {
-            if(JSON.parse(body).hasOwnProperty('error')){
-              console.log('this wasnt a real backup');
+        return new Promise((res, rej)=>{
+          const pathPrefix = 'backups/';
+          let path = "";
+          let url = "";
+          if (Object.keys(config).length === 0) {
+              console.log('Not enough arguments in ' + fb_db_name + "\'s config");
               return;
-            }
-            if (this.preparePath(path)) {
-                let timestamp = new Date().getTime();
-                if (/^win/.test(process.platform)) { //windows patch
-                    execSync('type NUL > ' + path + '/' + timestamp + '.json');
+          }
 
-                }
+          path = (config.hasOwnProperty('version')) ? `${fb_db_name}/${config['version']}` : `${fb_db_name}/default`;
+          path = pathPrefix + path;
+          url = `https://${fb_db_name}.firebaseio.com/.json?format=export&auth=${config['secret_key']}`;
+          request(url, (err, resp, body) => {
+              if(JSON.parse(body).hasOwnProperty('error')){
+                console.log('this wasnt a real backup');
+                rej('stop');
+                return;
+              }
+              if (this.preparePath(path)) {
+                  let timestamp = new Date().getTime();
+                  if (/^win/.test(process.platform)) { //windows patch
+                      execSync('type NUL > ' + path + '/' + timestamp + '.json');
 
-                fs.writeFileSync(path + '/' + timestamp + '.json', body, {
-                    flag: "w+"
-                });
-            } else {
-              console.log("fail");
-            }
+                  }
+
+                  fs.writeFileSync(path + '/' + timestamp + '.json', body, {
+                      flag: "w+"
+                  });
+                  res();
+              } else {
+                console.log("fail");
+                rej();
+              }
+          })
         })
-
     }
 
     //preparePath would be "saveFile", but passing the body would be time consuming on large firebase dbs.
@@ -85,7 +89,7 @@ class FirebaseBackupper {
             delete this.yaml['General'];
         }
 
-        var crons = [];
+        let mesy = {};
         for (let fb_db_ref in this.yaml) {
 
             //The secret_key is a required field.
@@ -98,19 +102,23 @@ class FirebaseBackupper {
             }
 
             let fb_db_ref_interval = (this.yaml[fb_db_ref].hasOwnProperty('interval')) ? this.yaml[fb_db_ref]['interval'] : this.backupInterval;
-
             //run cronjobs
-            crons.push(new cron.CronJob(fb_db_ref_interval, () => { //arrow function is important here due to usage of the this keyword*/
-                    this.makeBackup(this.yaml[fb_db_ref], fb_db_ref);
+            mesy[fb_db_ref] = new cron.CronJob(fb_db_ref_interval, () => { //arrow function is important here due to usage of the this keyword*/
+
+                    this.makeBackup(this.yaml[fb_db_ref], fb_db_ref)
+                    .catch((data) =>{
+                      if(data =="stop"){
+                        mesy[fb_db_ref].stop(); //stop the cron job if it was a bad config
+                      }
+                    })
                  },
                 null,
                 true, //true says to run the job immediately
                 null // Timezone: null tells the library to take timezone of node server
-            ));
-
+            );
 
         }
-        return crons;
+        return mesy;
     }
 
     get printYaml() { console.log(this.yaml); }
