@@ -5,15 +5,11 @@ import '../views/calendar.css';
 const style = {
   div: {
     width: '200px',
-    height: 'auto',
+    height: '48px',
     display: 'inline-block',
-    margin: '20px',
+    margin: '10px 20px 20px 20px',
     verticalAlign: 'top',
     fontFamily: 'sans-serif'
- },
- calendar: {
-   backgroundColor: 'green',
-   fontSize: '18px'
  }
 }
 
@@ -26,7 +22,7 @@ class Calendar extends Component {
   render() {
     return (
       <div style={style.div}>
-        <Datetime style={style.calendar} defaultValue={new Date()} onChange={this.handleChange }/>
+        <Datetime defaultValue={new Date()} onChange={this.handleChange }/>
       </div>
     );
   }

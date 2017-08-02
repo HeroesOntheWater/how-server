@@ -21,6 +21,20 @@ const styles = {
   },
   table: {
     height: '100%'
+  },
+  body: {
+    height: '100%',
+    display: 'inline'
+  },
+  header: {
+    fontSize: '20px',
+    color: 'black'
+  },
+  row: {
+    height: '70px'
+  },
+  item: {
+    fontSize: '20px'
   }
 }
 export default class FileTable extends Component {
@@ -80,22 +94,22 @@ export default class FileTable extends Component {
   render() {
     return (
       <div style={styles.div}>
-        <Table bodyStyle={{height:'93%'}} wrapperStyle={styles.table} selectable={true} multiSelectable={true} onRowSelection={this.handleRowSelection}>
+        <Table bodyStyle={styles.body} wrapperStyle={styles.table} selectable={true} multiSelectable={true} onRowSelection={this.handleRowSelection}>
           <TableHeader enableSelectAll={true}>
             <TableRow>
-              <TableHeaderColumn>Number</TableHeaderColumn>
-              <TableHeaderColumn>Database</TableHeaderColumn>
-              <TableHeaderColumn>Version</TableHeaderColumn>
-              <TableHeaderColumn>Time</TableHeaderColumn>
+              <TableHeaderColumn style={styles.header}>Number</TableHeaderColumn>
+              <TableHeaderColumn style={styles.header}>Database</TableHeaderColumn>
+              <TableHeaderColumn style={styles.header}>Version</TableHeaderColumn>
+              <TableHeaderColumn style={styles.header}>Time</TableHeaderColumn>
             </TableRow>
           </TableHeader>
           <TableBody deselectOnClickaway={false} showRowHover={true} stripedRows={false}>
             {this.props.arrOfTimestamps.map((timestamp, index) => (
-              <TableRow key={index} selected={this.state.selectedRows.indexOf(index) !== -1}>
-                <TableRowColumn>{index}</TableRowColumn>
-                <TableRowColumn>{this.props.app}</TableRowColumn>
-                <TableRowColumn>{this.props.version}</TableRowColumn>
-                <TableRowColumn>{moment(timestamp).format("DD MMM YYYY hh:mm a")}</TableRowColumn>
+              <TableRow style={styles.row} key={index} selected={this.state.selectedRows.indexOf(index) !== -1}>
+                <TableRowColumn style={styles.item}>{index}</TableRowColumn>
+                <TableRowColumn style={styles.item}>{this.props.app}</TableRowColumn>
+                <TableRowColumn style={styles.item}>{this.props.version}</TableRowColumn>
+                <TableRowColumn style={styles.item}>{moment(timestamp).format("DD MMM YYYY hh:mm a")}</TableRowColumn>
               </TableRow>
               ))}
           </TableBody>

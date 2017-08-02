@@ -3,17 +3,15 @@ import request from 'superagent';
 import DropdownList from 'react-widgets/lib/DropdownList';
 import 'react-widgets/dist/css/react-widgets.css';
 
-const style = {
+const styles = {
   div: {
-    width: '200px',
+    width: '250px',
     height: 'auto',
     display: 'inline-block',
-    margin: '20px'
+    margin: '10px 20px 20px 20px'
   },
   dropDown: {
-    width: '200px',
-    height: 'auto',
-    display: 'inline-block'
+    fontSize: '20px'
   }
 }
 
@@ -70,9 +68,10 @@ class VersionDropdown extends Component {
 
   render() {
     return(
-      <div style={style.div}>
+      <div style={styles.div}>
         {(!(this.state.versions && this.state.versions.length === 0)) &&
-          <DropdownList data={this.state.versions} value={this.state.selectedVersion} onChange={this.handleChange}/>
+          <DropdownList style={styles.dropDown} data={this.state.versions}
+          value={this.state.selectedVersion} onChange={this.handleChange}/>
         }
       </div>
     )

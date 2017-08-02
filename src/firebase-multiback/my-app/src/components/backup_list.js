@@ -26,11 +26,15 @@ const styles  = {
   submit: {
     verticalAlign: 'bottom',
     width: '200px',
-    height: '38px',
-    margin: '20px'
+    height: '46px',
+    margin: '20px',
   },
   label: {
-    top: '20%'
+    top: '10px',
+    fontSize: '18px'
+  },
+  button: {
+    backgroundColor: 'rgba(253, 236, 236, 0.64)'
   }
 }
 
@@ -104,7 +108,8 @@ class BackupList extends Component {
             <Calendar callbackFromParent={this.handleBeginDateCallback}/>
             <Calendar callbackFromParent={this.handleEndDateCallback} />
           </div>
-          <RaisedButton label="Get Results" onClick={this.handleSubmit} style={styles.submit} labelStyle={styles.label}/>
+          <RaisedButton label="Get Results" onClick={this.handleSubmit} style={styles.submit}
+          buttonStyle={styles.button} labelStyle={styles.label}/>
         </div>
         <FileTable arrOfTimestamps={this.state.files} token={this.state.token} app={this.state.app}
         version={this.state.version} />
