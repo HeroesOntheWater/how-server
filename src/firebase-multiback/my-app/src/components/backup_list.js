@@ -30,11 +30,15 @@ const styles  = {
     margin: '10px 20px 30px 20px',
   },
   label: {
-    top: '10px',
+    top: '6px',
     fontSize: '18px'
   },
   button: {
     backgroundColor: 'rgba(253, 236, 236, 0.64)'
+  },
+  header: {
+    fontWeight: '500',
+    fontSize: '18px'
   }
 }
 
@@ -93,17 +97,17 @@ class BackupList extends Component {
         </div>
         <div style={styles.row}>
           <div style={{display:'inline-block'}}>
-            <h3 style={{fontSize: '18px'}}>Select a database</h3>
+            <h3 style={styles.header}>Select a database</h3>
             <BackupDropdown token={this.state.token} callbackFromParent={this.handleBackupCallback}/>
           </div>
           <div style={{display:'inline-block'}}>
-            <h3 style={{fontSize: '18px'}}>Select a version</h3>
+            <h3 style={styles.header}>Select a version</h3>
             {(this.state.app != null) &&
             <VersionDropdown token={this.state.token} app={this.state.app} callbackFromParent={this.handleVersionCallback}/>
             }
           </div>
           <div style={{display:'inline-block', verticalAlign:'top'}}>
-            <h3 style={{fontSize: '18px'}}>Select begin and end date/time</h3>
+            <h3 style={styles.header}>Select begin and end date/time</h3>
             <Calendar callbackFromParent={this.handleBeginDateCallback}/>
             <Calendar callbackFromParent={this.handleEndDateCallback} />
           </div>
@@ -112,6 +116,7 @@ class BackupList extends Component {
         </div>
         <FileTable arrOfTimestamps={this.state.files} token={this.state.token} app={this.state.app}
         version={this.state.version} />
+        <RaisedButton label="Download" onClick={() => this.refs.FileTable.handleClick} style={{marginTop: '30'}}/>
       </div>
     </MuiThemeProvider>
   );

@@ -7,7 +7,6 @@ import {
   TableRow,
   TableRowColumn,
 } from 'material-ui/Table';
-import RaisedButton from 'material-ui/RaisedButton';
 import request from 'superagent';
 import moment from 'moment';
 
@@ -16,11 +15,12 @@ const styles = {
     display: 'block',
     width: '80%',
     margin: '0 auto',
-    height: '65%',
+    height: 'auto',
     boxShadow: '0 2px 5px 0 rgba(0,0,0,0.16) ,0 2px 10px 0 rgba(0,0,0,0.12)'
   },
   table: {
-    height: '100%'
+    height: '100%',
+    maxHeight: '500px'
   },
   body: {
     height: '100%',
@@ -49,10 +49,9 @@ export default class FileTable extends Component {
   }
 
   shouldComponentUpdate = (nextProps, nextState) => {
-    if(this.props.arrOfTimestamps != nextProps.arrOfTimestamps) {
+    if(this.props.arrOfTimestamps !== nextProps.arrOfTimestamps) {
       return true;
     }
-
     return false;
   }
   handleRowSelection = (selectedRows) => {
@@ -102,7 +101,7 @@ export default class FileTable extends Component {
   render() {
     return (
       <div style={styles.div}>
-        <Table bodyStyle={styles.body} wrapperStyle={styles.table} selectable={true} multiSelectable={true} onRowSelection={this.handleRowSelection}>
+        <Table fixedHeader={true} bodyStyle={styles.body} wrapperStyle={styles.table} selectable={true} multiSelectable={true} onRowSelection={this.handleRowSelection}>
           <TableHeader enableSelectAll={true}>
             <TableRow>
               <TableHeaderColumn style={styles.header}>Number</TableHeaderColumn>
@@ -122,7 +121,6 @@ export default class FileTable extends Component {
               ))}
           </TableBody>
         </Table>
-        <RaisedButton label="Download" onClick={this.handleClick} style={{marginTop: '30'}}/>
       </div>
     );
   }

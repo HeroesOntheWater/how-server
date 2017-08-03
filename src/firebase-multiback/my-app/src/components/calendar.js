@@ -16,6 +16,7 @@ const style = {
 class Calendar extends Component {
 
   handleChange = (event) => {
+    console.log(event._d.valueOf());
     this.props.callbackFromParent(event._d.valueOf());
   }
 
