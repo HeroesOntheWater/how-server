@@ -53,7 +53,9 @@ class BackupList extends Component {
       version: null,
       beginDate: todayTimestamp,
       endDate: todayTimestamp,
-      files: []
+      files: [],
+      selectedRows: [],
+      all: null
     };
   }
 
@@ -73,6 +75,21 @@ class BackupList extends Component {
     this.setState({endDate: date});
   }
 
+  handleFileTableCallback = (selectedRows) => {
+    if(selectedRows === 'all'){
+      this.setState({all: true});
+    } else if(selectedRows === "none") {
+      this.setState({all: false});
+      console.log("none");
+    } else {
+      this.setState({selectedRows: selectedRows});
+    }
+  }
+
+  handleClear = () => {
+    this.setState({files: []});
+  }
+
   handleSubmit = (event) => {
     var url = "http://localhost:8080/backup?token=" + this.state.token + "&app=" + this.state.app +
     "&version=" + this.state.version + "&fromDate=" + this.state.beginDate + "&toDate=" + this.state.endDate;
@@ -80,12 +97,47 @@ class BackupList extends Component {
       .end((err, res) => {
           if (err) {
             alert('Error', err);
+          } else if (res.body.length === 0) {
+            this.setState({files: res.body});
+            alert("No files for given time period.");
           } else {
             this.setState({files: res.body});
           }
         }
       );
     event.preventDefault();
+  }
+
+  handleClick = () => {
+    if(this.state.all === true){
+      this.state.files.forEach((timestamp) => {
+        var url = "http://localhost:8080/backup/download?token=" + this.state.token + "&app=" + this.state.app +
+          "&version=" + this.state.version + "&timestamp=" + timestamp;
+          console.log(url);
+          request.get(url)
+            .end((err, res) =>  {
+              if(err) {
+                console.log('Error', err);
+              } else {
+                window.open(url);
+              }
+          });
+      })
+    } else {
+      this.state.selectedRows.forEach((index) => {
+        var url = "http://localhost:8080/backup/download?token=" + this.state.token + "&app=" + this.state.app +
+          "&version=" + this.state.version + "&timestamp=" + this.state.files[index];
+          console.log(url);
+          request.get(url)
+            .end((err, res) =>  {
+              if(err) {
+                console.log('Error', err);
+              } else {
+                window.open(url);
+              }
+            });
+        });
+    }
   }
 
   render() {
@@ -115,8 +167,9 @@ class BackupList extends Component {
           buttonStyle={styles.button} labelStyle={styles.label}/>
         </div>
         <FileTable arrOfTimestamps={this.state.files} token={this.state.token} app={this.state.app}
-        version={this.state.version} />
-        <RaisedButton label="Download" onClick={() => this.refs.FileTable.handleClick} style={{marginTop: '30'}}/>
+        version={this.state.version} callbackFromParent={this.handleFileTableCallback}/>
+        <RaisedButton label="Download" onClick={this.handleClick} style={{marginTop: '30'}}/>
+        <RaisedButton label="Clear" onClick={this.handleClear} />
       </div>
     </MuiThemeProvider>
   );
