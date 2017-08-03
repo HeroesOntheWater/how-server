@@ -21,13 +21,13 @@ const styles  = {
     display: 'inline-block'
   },
   row: {
-    paddingTop: '20px'
+    paddingTop: '5px'
   },
   submit: {
     verticalAlign: 'bottom',
     width: '200px',
-    height: '46px',
-    margin: '20px',
+    height: '39px',
+    margin: '10px 20px 30px 20px',
   },
   label: {
     top: '10px',
@@ -78,7 +78,6 @@ class BackupList extends Component {
             alert('Error', err);
           } else {
             this.setState({files: res.body});
-            console.log(url);
           }
         }
       );
@@ -94,17 +93,17 @@ class BackupList extends Component {
         </div>
         <div style={styles.row}>
           <div style={{display:'inline-block'}}>
-            <h3>Select a database</h3>
+            <h3 style={{fontSize: '18px'}}>Select a database</h3>
             <BackupDropdown token={this.state.token} callbackFromParent={this.handleBackupCallback}/>
           </div>
           <div style={{display:'inline-block'}}>
-            <h3>Select a version</h3>
+            <h3 style={{fontSize: '18px'}}>Select a version</h3>
             {(this.state.app != null) &&
             <VersionDropdown token={this.state.token} app={this.state.app} callbackFromParent={this.handleVersionCallback}/>
             }
           </div>
           <div style={{display:'inline-block', verticalAlign:'top'}}>
-            <h3>Select begin and end date/time</h3>
+            <h3 style={{fontSize: '18px'}}>Select begin and end date/time</h3>
             <Calendar callbackFromParent={this.handleBeginDateCallback}/>
             <Calendar callbackFromParent={this.handleEndDateCallback} />
           </div>

@@ -27,8 +27,9 @@ const styles = {
     display: 'inline'
   },
   header: {
-    fontSize: '20px',
-    color: 'black'
+    fontSize: '18px',
+    color: 'black',
+    fontWeight: '500'
   },
   row: {
     height: '70px'
@@ -47,6 +48,13 @@ export default class FileTable extends Component {
     }
   }
 
+  shouldComponentUpdate = (nextProps, nextState) => {
+    if(this.props.arrOfTimestamps != nextProps.arrOfTimestamps) {
+      return true;
+    }
+
+    return false;
+  }
   handleRowSelection = (selectedRows) => {
     if(selectedRows === 'all'){
       this.setState({all: true});

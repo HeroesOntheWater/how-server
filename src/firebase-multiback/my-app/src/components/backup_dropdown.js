@@ -5,16 +5,15 @@ import 'react-widgets/dist/css/react-widgets.css';
 
 const styles = {
   div: {
-    width: '250px',
+    width: '225px',
     height: 'auto',
     display: 'inline-block',
     margin: '10px 20px 20px 20px'
   },
   dropDown: {
-    fontSize: '20px'
+    fontSize: '16px'
   }
 }
-
 
 class BackupDropdown extends Component {
 
