@@ -7,6 +7,7 @@ import {
   TableRow,
   TableRowColumn,
 } from 'material-ui/Table';
+import request from 'superagent';
 import moment from 'moment';
 
 const styles = {
@@ -48,11 +49,7 @@ export default class FileTable extends Component {
   }
 
   shouldComponentUpdate = (nextProps, nextState) => {
-    if((this.props.arrOfTimestamps !== nextProps.arrOfTimestamps) || (this.selectedRows !== nextState.selectedRows) || (this.all !== nextState.all) ) {
-      return true;
-    }
-
-    return true;
+    return((this.props.arrOfTimestamps !== nextProps.arrOfTimestamps) || (this.selectedRows !== nextState.selectedRows) || (this.all !== nextState.all));
   }
 
   handleRowSelection = (selectedRows) => {
@@ -61,9 +58,39 @@ export default class FileTable extends Component {
       this.setState({all: true});
     } else if(selectedRows === "none") {
       this.setState({all: false});
-      console.log("none");
     } else {
       this.setState({selectedRows: selectedRows});
+    }
+  }
+
+  handleClick = () => {
+    if(this.state.all === true){
+      this.props.arrOfTimestamps.forEach((timestamp) => {
+        var url = "http://localhost:8080/backup/download?token=" + this.props.token + "&app=" + this.props.app +
+          "&version=" + this.props.version + "&timestamp=" + timestamp;
+          console.log(url);
+          request.get(url)
+            .end((err, res) =>  {
+              if(err) {
+                console.log('Error', err);
+              } else {
+                window.open(url);
+              }
+          });
+      })
+    } else {
+      this.state.selectedRows.forEach((index) => {
+        var url = "http://localhost:8080/backup/download?token=" + this.props.token + "&app=" + this.props.app +
+          "&version=" + this.props.version + "&timestamp=" + this.props.arrOfTimestamps[index];
+          request.get(url)
+            .end((err, res) =>  {
+              if(err) {
+                console.log('Error', err);
+              } else {
+                window.open(url);
+              }
+            });
+        });
     }
   }
 
