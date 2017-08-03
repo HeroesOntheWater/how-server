@@ -53,7 +53,7 @@ class BackupList extends Component {
       version: null,
       beginDate: todayTimestamp,
       endDate: todayTimestamp,
-      files: [],
+      arrOfTimestamps: [],
       selectedRows: [],
       all: null
     };
@@ -87,7 +87,7 @@ class BackupList extends Component {
   }
 
   handleClear = () => {
-    this.setState({files: []});
+    this.setState({arrOfTimestamps: []});
   }
 
   handleSubmit = (event) => {
@@ -98,10 +98,10 @@ class BackupList extends Component {
           if (err) {
             alert('Error', err);
           } else if (res.body.length === 0) {
-            this.setState({files: res.body});
+            this.setState({arrOfTimestamps: res.body});
             alert("No files for given time period.");
           } else {
-            this.setState({files: res.body});
+            this.setState({arrOfTimestamps: res.body});
           }
         }
       );
@@ -110,7 +110,7 @@ class BackupList extends Component {
 
   handleClick = () => {
     if(this.state.all === true){
-      this.state.files.forEach((timestamp) => {
+      this.state.arrOfTimestamps.forEach((timestamp) => {
         var url = "http://localhost:8080/backup/download?token=" + this.state.token + "&app=" + this.state.app +
           "&version=" + this.state.version + "&timestamp=" + timestamp;
           console.log(url);
@@ -127,7 +127,7 @@ class BackupList extends Component {
       console.log(this.state.selectedRows);
       this.state.selectedRows.forEach((index) => {
         var url = "http://localhost:8080/backup/download?token=" + this.state.token + "&app=" + this.state.app +
-          "&version=" + this.state.version + "&timestamp=" + this.state.files[index];
+          "&version=" + this.state.version + "&timestamp=" + this.state.arrOfTimestamps[index];
           console.log(url);
           request.get(url)
             .end((err, res) =>  {
@@ -167,7 +167,7 @@ class BackupList extends Component {
           <RaisedButton label="Get Results" onClick={this.handleSubmit} style={styles.submit}
           buttonStyle={styles.button} labelStyle={styles.label}/>
         </div>
-        <FileTable arrOfTimestamps={this.state.files} selectedRows={this.state.selectedRows} token={this.state.token} app={this.state.app}
+        <FileTable arrOfTimestamps={this.state.arrOfTimestamps} selectedRows={this.state.selectedRows} token={this.state.token} app={this.state.app}
         version={this.state.version} callbackFromParent={this.handleFileTableCallback}/>
         <RaisedButton label="Download" onClick={this.handleClick} style={{margin: '15'}}/>
         <RaisedButton label="Clear" onClick={this.handleClear} style={{margin: '15'}} />

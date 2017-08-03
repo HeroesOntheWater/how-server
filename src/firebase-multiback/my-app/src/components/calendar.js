@@ -13,6 +13,12 @@ const style = {
  }
 }
 
+const today = new Date();
+
+var valid = function(current) {
+  return current.isBefore(today);
+}
+
 class Calendar extends Component {
 
   handleChange = (event) => {
@@ -22,7 +28,7 @@ class Calendar extends Component {
   render() {
     return (
       <div style={style.div}>
-        <Datetime defaultValue={new Date()} onChange={this.handleChange }/>
+        <Datetime defaultValue={today} isValidDate={valid} onChange={this.handleChange} inputProps={{readOnly:true}}/>
       </div>
     );
   }

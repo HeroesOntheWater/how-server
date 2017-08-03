@@ -49,7 +49,7 @@ export default class FileTable extends Component {
   }
 
   shouldComponentUpdate = (nextProps, nextState) => {
-    return((this.props.arrOfTimestamps !== nextProps.arrOfTimestamps) || (this.selectedRows !== nextState.selectedRows) || (this.all !== nextState.all));
+    return((this.props.arrOfTimestamps !== nextProps.arrOfTimestamps) || (this.state.selectedRows !== nextState.selectedRows));
   }
 
   handleRowSelection = (selectedRows) => {
@@ -58,6 +58,7 @@ export default class FileTable extends Component {
       this.setState({all: true});
     } else if(selectedRows === "none") {
       this.setState({all: false});
+      console.log("none");
     } else {
       this.setState({selectedRows: selectedRows});
     }
