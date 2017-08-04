@@ -86,12 +86,15 @@ class BackupList extends Component {
   }
 
   handleClear = () => {
-    this.setState({arrOfTimestamps: []});
+    this.setState({arrOfTimestamps: [], selectedRows: [], app: null});
   }
 
   handleSubmit = (event) => {
+    this.setState({selectedRows: []});
     var url = "http://localhost:8080/backup?token=" + this.state.token + "&app=" + this.state.app +
     "&version=" + this.state.version + "&fromDate=" + this.state.beginDate + "&toDate=" + this.state.endDate;
+    console.log(this.state.version);
+
     request.get(url)
       .end((err, res) => {
           if (err) {
@@ -124,7 +127,7 @@ class BackupList extends Component {
     } else {
       this.state.selectedRows.forEach((index) => {
         var url = "http://localhost:8080/backup/download?token=" + this.state.token + "&app=" + this.state.app +
-          "&version" + this.state.version + "&timestamp=" + this.state.arrOfTimestamps[index];
+          "&version=" + this.state.version + "&timestamp=" + this.state.arrOfTimestamps[index];
           request.get(url)
             .end((err, res) =>  {
               if(err) {
@@ -147,7 +150,7 @@ class BackupList extends Component {
         <div style={styles.row}>
           <div style={{display:'inline-block'}}>
             <h3 style={styles.header}>Select a database</h3>
-            <BackupDropdown token={this.state.token} callbackFromParent={this.handleBackupCallback}/>
+            <BackupDropdown token={this.state.token} app={this.state.app} callbackFromParent={this.handleBackupCallback}/>
           </div>
           <div style={{display:'inline-block'}}>
             <h3 style={styles.header}>Select a version</h3>
@@ -163,7 +166,7 @@ class BackupList extends Component {
           <RaisedButton label="Get Results" onClick={this.handleSubmit} style={styles.submit}
           buttonStyle={styles.button} labelStyle={styles.label}/>
         </div>
-        <FileTable arrOfTimestamps={this.state.arrOfTimestamps} token={this.state.token} app={this.state.app}
+        <FileTable arrOfTimestamps={this.state.arrOfTimestamps} selectedRows={this.state.selectedRows} token={this.state.token} app={this.state.app}
         version={this.state.version} callbackFromParent={this.handleFileTableCallback}/>
         <RaisedButton label="Download" onClick={this.handleClick} style={{margin: '15'}}/>
         <RaisedButton label="Clear" onClick={this.handleClear} style={{margin: '15'}} />

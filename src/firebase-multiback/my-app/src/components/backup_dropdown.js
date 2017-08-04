@@ -41,6 +41,13 @@ class BackupDropdown extends Component {
     );
   }
 
+  componentWillReceiveProps= (nextState) => {
+    if(nextState.app === null) {
+      this.setState({selectedApp: this.state.apps[0]})
+      this.props.callbackFromParent(this.state.apps[0])
+    }
+  };
+  
   handleChange = (event) => {
     this.setState({selectedApp: event});
     this.props.callbackFromParent(event);
