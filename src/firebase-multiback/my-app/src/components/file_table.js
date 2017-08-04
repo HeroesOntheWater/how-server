@@ -40,6 +40,7 @@ const styles = {
 }
 
 export default class FileTable extends Component {
+  
     constructor(props) {
         super(props);
         this.state = {
@@ -57,38 +58,15 @@ export default class FileTable extends Component {
         if (selectedRows === 'all') {
             this.setState({all: true});
         } else if (selectedRows === "none") {
-            this.setState({all: false});
+            this.setState({all: false, selectedRows: []});
             console.log("none");
         } else {
             this.setState({selectedRows: selectedRows});
         }
     }
 
-    handleClick = () => {
-        if (this.state.alltrue) {
-          var url = "http://localhost:8080/backup/download?token=" + this.props.token + "&app=" + this.props.app + "&version=" + this.props.version + "&timestamp=";
-            this.props.arrOfTimestamps.forEach((timestamp) => {
-                url += timestamp;
-                request.get(url).end((err, res) => {
-                    if (err) {
-                        console.log('Error', err);
-                    } else {
-                        window.open(url);
-                    }
-                });
-            })
-        } else {
-            this.state.selectedRows.forEach((index) => {
-                url += this.props.arrOfTimestamps[index];
-                request.get(url).end((err, res) => {
-                    if (err) {
-                        console.log('Error', err);
-                    } else {
-                        window.open(url);
-                    }
-                });
-            });
-        }
+    componentWillReceiveProps = (nextProps) => {
+      this.setState({selectedRows: nextProps.selectedRows});
     }
 
     render() {

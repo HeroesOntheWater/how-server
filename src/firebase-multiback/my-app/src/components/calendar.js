@@ -15,8 +15,7 @@ const style = {
 }
 
 const today = Moment(new Date());
-
-var valid = function(current) {
+const valid = function(current) {
     return current.isBefore(today);
 }
 

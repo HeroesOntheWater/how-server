@@ -1,15 +1,16 @@
 import React, {Component} from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import '../App.css';
-import logo from '../views/database.png';
+import Moment from 'moment';
+import request from 'superagent';
+import injectTapEventPlugin from 'react-tap-event-plugin';
 import BackupDropdown from './backup_dropdown';
 import VersionDropdown from './version_dropdown';
 import Calendar from './calendar';
 import FileTable from './file_table';
-import Moment from 'moment';
-import request from 'superagent';
 import RaisedButton from 'material-ui/RaisedButton';
-import injectTapEventPlugin from 'react-tap-event-plugin';
+import '../App.css';
+import logo from '../views/database.png';
+
 injectTapEventPlugin();
 
 const styles = {
@@ -46,10 +47,10 @@ const styles = {
 }
 
 const today = Moment(new Date());
-
-var todayTimestamp = Moment.unix(today) / 1000;
+const todayTimestamp = Moment.unix(today) / 1000;
 
 class BackupList extends Component {
+  
     constructor(props) {
         super(props);
         this.state = {
@@ -111,10 +112,10 @@ class BackupList extends Component {
     }
 
     handleClick = () => {
-        var url = "http://localhost:8080/backup/download?token=" + this.state.token + "&app=" + this.state.app + "&version=" + this.state.version + "&timestamp=";
         if (this.state.all) {
             this.state.arrOfTimestamps.forEach((timestamp) => {
-                url += timestamp;
+              var url = "http://localhost:8080/backup/download?token=" + this.state.token + "&app=" + this.state.app +
+                "&version=" + this.state.version + "&timestamp=" + timestamp;
                 request.get(url).end((err, res) => {
                     if (err) {
                         console.log('Error', err);
@@ -125,8 +126,9 @@ class BackupList extends Component {
             })
         } else {
             this.state.selectedRows.forEach((index) => {
-                url += this.state.arrOfTimestamps[index];
-                request.get(url).end((err, res) => {
+              var url = "http://localhost:8080/backup/download?token=" + this.state.token + "&app=" + this.state.app +
+              "&version=" + this.state.version + "&timestamp=" + this.state.arrOfTimestamps[index];
+              request.get(url).end((err, res) => {
                     if (err) {
                         console.log('Error', err);
                     } else {
