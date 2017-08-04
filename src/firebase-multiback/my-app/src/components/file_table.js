@@ -69,7 +69,6 @@ export default class FileTable extends Component {
       this.props.arrOfTimestamps.forEach((timestamp) => {
         var url = "http://localhost:8080/backup/download?token=" + this.props.token + "&app=" + this.props.app +
           "&version=" + this.props.version + "&timestamp=" + timestamp;
-          console.log(url);
           request.get(url)
             .end((err, res) =>  {
               if(err) {

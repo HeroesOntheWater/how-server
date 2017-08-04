@@ -76,7 +76,6 @@ class BackupList extends Component {
   }
 
   handleFileTableCallback = (selectedRows) => {
-    console.log(selectedRows);
     if(selectedRows === 'all'){
       this.setState({all: true});
     } else if(selectedRows === "none") {
@@ -113,7 +112,6 @@ class BackupList extends Component {
       this.state.arrOfTimestamps.forEach((timestamp) => {
         var url = "http://localhost:8080/backup/download?token=" + this.state.token + "&app=" + this.state.app +
           "&version=" + this.state.version + "&timestamp=" + timestamp;
-          console.log(url);
           request.get(url)
             .end((err, res) =>  {
               if(err) {
@@ -124,11 +122,9 @@ class BackupList extends Component {
           });
       })
     } else {
-      console.log(this.state.selectedRows);
       this.state.selectedRows.forEach((index) => {
         var url = "http://localhost:8080/backup/download?token=" + this.state.token + "&app=" + this.state.app +
-          "&version=" + this.state.version + "&timestamp=" + this.state.arrOfTimestamps[index];
-          console.log(url);
+          "&version" + this.state.version + "&timestamp=" + this.state.arrOfTimestamps[index];
           request.get(url)
             .end((err, res) =>  {
               if(err) {
@@ -167,7 +163,7 @@ class BackupList extends Component {
           <RaisedButton label="Get Results" onClick={this.handleSubmit} style={styles.submit}
           buttonStyle={styles.button} labelStyle={styles.label}/>
         </div>
-        <FileTable arrOfTimestamps={this.state.arrOfTimestamps} selectedRows={this.state.selectedRows} token={this.state.token} app={this.state.app}
+        <FileTable arrOfTimestamps={this.state.arrOfTimestamps} token={this.state.token} app={this.state.app}
         version={this.state.version} callbackFromParent={this.handleFileTableCallback}/>
         <RaisedButton label="Download" onClick={this.handleClick} style={{margin: '15'}}/>
         <RaisedButton label="Clear" onClick={this.handleClear} style={{margin: '15'}} />

@@ -61,7 +61,6 @@ class VersionDropdown extends Component {
   }
 
   handleChange = (event) => {
-    console.log(event);
     this.setState({selectedVersion: event});
     this.props.callbackFromParent(event);
   }
