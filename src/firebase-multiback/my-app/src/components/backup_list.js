@@ -104,7 +104,7 @@ class BackupList extends Component {
     handleClick = () => {
         if (this.state.all) {
             this.state.arrOfTimestamps.forEach((timestamp) => {
-              ApiHandler.downloadAll(this.state.token, this.state.app, this.state.version, timestamp);
+              ApiHandler.downloadFile(this.state.token, this.state.app, this.state.version, timestamp);
             });
         } else {
             this.state.selectedRows.forEach((index) => {
