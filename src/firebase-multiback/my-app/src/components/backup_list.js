@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Moment from 'moment';
-import request from 'superagent';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import BackupDropdown from './backup_dropdown';
 import VersionDropdown from './version_dropdown';
@@ -9,7 +8,7 @@ import Calendar from './calendar';
 import FileTable from './file_table';
 import RaisedButton from 'material-ui/RaisedButton';
 import '../App.css';
-import logo from '../views/database.png';
+import ApiHandler from '../utils/api_handler';
 
 injectTapEventPlugin();
 
@@ -50,7 +49,7 @@ const today = Moment(new Date());
 const todayTimestamp = Moment.unix(today) / 1000;
 
 class BackupList extends Component {
-  
+
     constructor(props) {
         super(props);
         this.state = {
@@ -97,44 +96,19 @@ class BackupList extends Component {
 
     handleSubmit = (event) => {
         this.setState({selectedRows: []});
-        var url = "http://localhost:8080/backup?token=" + this.state.token + "&app=" + this.state.app + "&version=" + this.state.version + "&fromDate=" + this.state.beginDate + "&toDate=" + this.state.endDate;
-        request.get(url).end((err, res) => {
-            if (err) {
-                alert('Error', err);
-            } else if (res.body.length === 0) {
-                this.setState({arrOfTimestamps: res.body});
-                alert("No files for given time period.");
-            } else {
-                this.setState({arrOfTimestamps: res.body});
-            }
-        });
+        ApiHandler.makeRequest(this.state.token,this.state.app,this.state.version,this.state.beginDate,this.state.endDate)
+          .then((data)=>this.setState({arrOfTimestamps: data}));
         event.preventDefault();
     }
 
     handleClick = () => {
         if (this.state.all) {
             this.state.arrOfTimestamps.forEach((timestamp) => {
-              var url = "http://localhost:8080/backup/download?token=" + this.state.token + "&app=" + this.state.app +
-                "&version=" + this.state.version + "&timestamp=" + timestamp;
-                request.get(url).end((err, res) => {
-                    if (err) {
-                        console.log('Error', err);
-                    } else {
-                        window.open(url);
-                    }
-                });
-            })
+              ApiHandler.downloadAll(this.state.token, this.state.app, this.state.version, timestamp);
+            });
         } else {
             this.state.selectedRows.forEach((index) => {
-              var url = "http://localhost:8080/backup/download?token=" + this.state.token + "&app=" + this.state.app +
-              "&version=" + this.state.version + "&timestamp=" + this.state.arrOfTimestamps[index];
-              request.get(url).end((err, res) => {
-                    if (err) {
-                        console.log('Error', err);
-                    } else {
-                        window.open(url);
-                    }
-                });
+              ApiHandler.downloadFile(this.state.token, this.state.app, this.state.version, this.state.arrOfTimestamps[index]);
             });
         }
     }
@@ -144,7 +118,7 @@ class BackupList extends Component {
             <MuiThemeProvider>
                 <div className="App">
                     <div className="App-header">
-                        <img src={logo} style={styles.imageStyle} alt="database icon"/>
+                        <h2>Firebase(FB) Database Backup Management System</h2>
                     </div>
                     <div style={styles.row}>
                         <div style={{

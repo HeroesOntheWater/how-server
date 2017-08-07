@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Login from './components/login';
-import logo from './views/database.png';
 import {Card, CardTitle} from 'material-ui/Card';
 import './App.css';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -33,7 +32,7 @@ class App extends Component {
       <MuiThemeProvider>
         <div className="App">
           <div className="App-header">
-            <img src={logo} style={style.imageStyle} alt="database icon"/>
+            <h2>Firebase(FB) Database Backup Management System</h2>
           </div>
           <Card style={style.cardStyle}>
             <CardTitle title="Enter your registered email and password to look at the backups" titleStyle={style.titleStyle}/>

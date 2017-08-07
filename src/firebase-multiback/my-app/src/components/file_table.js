@@ -7,7 +7,6 @@ import {
     TableRow,
     TableRowColumn
 } from 'material-ui/Table';
-import request from 'superagent';
 import moment from 'moment';
 
 const styles = {
@@ -40,7 +39,7 @@ const styles = {
 }
 
 export default class FileTable extends Component {
-  
+
     constructor(props) {
         super(props);
         this.state = {
