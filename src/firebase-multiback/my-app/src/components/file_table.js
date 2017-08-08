@@ -38,6 +38,8 @@ const styles = {
     }
 }
 
+const headers = ["Number", "Database", "Version", "Time"];
+
 export default class FileTable extends Component {
 
     constructor(props) {
@@ -74,10 +76,10 @@ export default class FileTable extends Component {
                 <Table fixedHeader={true} bodyStyle={styles.body} wrapperStyle={styles.table} selectable={true} multiSelectable={true} onRowSelection={this.handleRowSelection}>
                     <TableHeader enableSelectAll={true}>
                         <TableRow>
-                            <TableHeaderColumn style={styles.header}>Number</TableHeaderColumn>
-                            <TableHeaderColumn style={styles.header}>Database</TableHeaderColumn>
-                            <TableHeaderColumn style={styles.header}>Version</TableHeaderColumn>
-                            <TableHeaderColumn style={styles.header}>Time</TableHeaderColumn>
+                            {headers.map((header) => (
+                              <TableHeaderColumn style={styles.header}>{header}</TableHeaderColumn>
+                              ))
+                            };
                         </TableRow>
                     </TableHeader>
                     <TableBody deselectOnClickaway={false} showRowHover={true} stripedRows={false}>
