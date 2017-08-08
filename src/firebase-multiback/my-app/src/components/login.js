@@ -3,35 +3,47 @@ import request from 'superagent';
 import createBrowserHistory from 'history/createBrowserHistory';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
+import ApiHandler from '../utils/api_handler';
 
 const history = createBrowserHistory({forceRefresh: true});
 
-const style = {
-    formStyle: {
+const styles = {
+    formstyles: {
         marginTop: '30px'
     },
-    textFieldStyle: {
+    textFieldstyles: {
         width: '55%',
         margin: '10px'
     },
-    textStyle: {
+    textstyles: {
         fontSize: '30px'
     },
-    textAreaStyle: {
+    textAreastyles: {
         height: '30px'
     },
-    buttonStyle: {
+    buttonstyles: {
         marginTop: '25',
         width: '200px',
         height: '70px'
     },
-    labelStyle: {
+    labelstyles: {
         fontSize: '40px',
         lineHeight: '70px'
     },
-    overlayStyle: {
+    overlaystyles: {
         height: '70px'
-    }
+    },
+      fileUpload:{
+        container:{
+          display:'flex'
+        },
+        spacer:{
+          flexGrow:'1'
+        },
+        content:{
+          flexGrow:'auto'
+        }
+      }
 }
 
 class Login extends Component {
@@ -46,15 +58,15 @@ class Login extends Component {
     }
 
     determineView = () => {
-        request.get('http://localhost:8080/hasConfig').end((err, res) => {
-            // if (err || !res.ok) {
-            //   alert('Oh no! error');
-            // } else {
-            (res.body)
-                ? this.setState({add_config: false})
-                : this.setState({add_config: true})
-            // }
-        });
+        request.get('http://localhost:8080/hasConfig')
+          .then((res) => this.setState({add_config: false}),
+                (err)=>this.setState({add_config: true}));
+    }
+
+    handleUpload = () =>{
+      request.post('http://localhost:8080/uploadConfig')
+      .then((res) => this.setState({add_config: false}),
+                (err)=>this.setState({add_config: true}));
     }
 
     handleChangeEmail = (event) => {
@@ -88,25 +100,40 @@ class Login extends Component {
     }
 
     render() {
-        return (
-            <form style={style.formStyle} onSubmit={this.handleSubmit}>
-                {(this.state.add_config)
-                    ? (() => {
-                        return <div><input type="file"/>click to add file</div>
-                    })()
-                    : (() => {
-                        return (
-                            <div>
-                                <TextField value={this.state.email} onChange={this.handleChangeEmail} hintText="Email" multiLine={true} style={style.textFieldStyle} inputStyle={style.textStyle} textareaStyle={style.textAreaStyle} hintStyle={style.textStyle}/>
-                                <br/>
-                                <TextField type="password" value={this.state.password} onChange={this.handleChangePassword} hintText="Password" style={style.textFieldStyle} inputStyle={style.textStyle} hintStyle={style.textStyle}/>
-                                <br/>
-                                <RaisedButton label="Submit" type="submit" value="Submit" style={style.buttonStyle} labelStyle={style.labelStyle} overlayStyle={style.overlayStyle}/>
-                            </div>
-                        )
-                    })()}
-            </form>
-        );
+      const state = this.state.add_config;
+
+      let res = null; 
+      if(state){
+        res = (<form style={styles.formstyles} onSubmit={this.handleSubmit}>
+              <div>
+                <div style={styles.fileUpload.container}>
+                  <div style={styles.fileUpload.spacer}></div>
+                  <div style={styles.fileUpload.content}>
+                    <input type="file"/>click to add file
+                  </div>
+                  <div style={styles.fileUpload.spacer}></div>
+                </div>
+              </div>
+              </form>);
+      }
+      else{
+        res = (<form styles={styles.formstyles} onSubmit={this.handleSubmit}>
+                <div>
+                    <TextField value={this.state.email} onChange={this.handleChangeEmail} hintText="Email" multiLine={true} styles={styles.textFieldstyles} inputstyles={styles.textstyles} textareastyles={styles.textAreastyles} hintstyles={styles.textstyles}/>
+                    <br/>
+                    <TextField type="password" value={this.state.password} onChange={this.handleChangePassword} hintText="Password" styles={styles.textFieldstyles} inputstyles={styles.textstyles} hintstyles={styles.textstyles}/>
+                    <br/>
+                    <RaisedButton label="Submit" type="submit" value="Submit" styles={styles.buttonstyles} labelstyles={styles.labelstyles} overlaystyles={styles.overlaystyles}/>
+                </div>
+              </form>);
+      }
+       return (
+         <div>
+          {
+            res
+          }
+         </div>
+       )
     }
 }
 
