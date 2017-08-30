@@ -1,6 +1,7 @@
 {
     "github_link":"https://github.com/madthad91/thad_linuxacademy.git", 
+    "package_name":"thad",
     "local_path":"/thad", 
-    "command_set":"run", 
+    "command_set":"clone", 
     "app_name":""
 }

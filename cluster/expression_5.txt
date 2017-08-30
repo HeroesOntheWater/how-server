@@ -1,0 +1,7 @@
+{
+    "github_link":"", 
+    "package_name":"thad",
+    "local_path":"thad/", 
+    "command_set":"install", 
+    "app_name":""
+}

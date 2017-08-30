@@ -1,6 +1,7 @@
 {
     "github_link":"", 
-    "local_path":"", 
+    "package_name":"",
+    "local_path":"testapp/", 
     "command_set":"run", 
-    "app_name":"/testapp"
+    "app_name":"testapp"
 }

@@ -1,6 +1,6 @@
 {
     "github_link":"", 
     "local_path":"/testapp", 
-    "command_set":"kill", 
+    "command_set":"run", 
     "app_name":"/testapp"
 }

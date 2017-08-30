@@ -2,32 +2,42 @@ var cluster = require('cluster');
 var bodyParser = require('body-parser');
 var path = require('path');
 var npm = require('npm');
+var git = require('nodegit');
 
 if(cluster.isMaster){
-    var git = require('nodegit');
     var app = require('express')();
     app.use(bodyParser.json());
 
     var numCPUs = require('os').cpus().length;
     var worker_objects = {};
 
-    // use a bunch of .then to stack operations
-    app.post('/run', function(req, res){
-        if(req.body.github_link){
-            console.log(req.body.github_link);
-            git.Clone(req.body.github_link, __dirname + req.body.local_path).catch(function(err){
-                console.log(err);
-            }).then(function(repo){
-                console.log("complete!");
-                console.log(repo);
-
-                var worker = cluster.fork();
-                worker_objects[worker.process.pid] = req.body.app_name;
-                console.log(worker_objects);
-                worker.send(req.body);
-            });
+    app.post('/install', function(req, res){
+        if(req.body["package_name"]){
+            var worker = cluster.fork();
+            worker_objects[worker.process.pid] = req.body.app_name;
+            console.log(worker_objects);
+            worker.send(req.body);
         }
-        else if(req.body.command_set == "run"){
+        else{
+            res.status(400).send("Did not provide any package name");
+        }
+    })
+
+    app.post('/clone', function(req, res){
+        if(req.body["github_link"]){
+            var worker = cluster.fork();
+            worker_objects[worker.process.pid] = req.body.app_name;
+            console.log(worker_objects);
+            worker.send(req.body);
+        }
+        else{
+            res.status(400).send("Did not provide any github link");
+        }
+
+    });
+
+    app.post('/run', function(req, res){
+        if(req.body.command_set == "run"){
             var worker = cluster.fork();
             worker_objects[worker.process.pid] = req.body.app_name;
             console.log(worker_objects);
@@ -36,15 +46,21 @@ if(cluster.isMaster){
         res.send('run').end();
     });
 
+
     app.delete('/kill/:pid', function(req, res){
-        for(var wid in cluster.workers){
-            if(cluster.workers[wid].process.pid == req.params.pid){
-                delete worker_objects[req.params.pid];
-                console.log(worker_objects);
-                cluster.workers[wid].send({command_set:"kill"});
+        if(req.params["pid"]){
+            for(var wid in cluster.workers){
+                if(cluster.workers[wid].process.pid == req.params.pid){
+                    delete worker_objects[req.params.pid];
+                    console.log(worker_objects);
+                    cluster.workers[wid].send(req.body);
+                }
             }
+            res.send('delete').end();
         }
-        res.send('delete').end();
+        else{
+            res.status(400).send("Did not provide any pid");
+        }
     });
 
     app.get('/*', function(req, res) {
@@ -69,15 +85,42 @@ if(cluster.isMaster){
 }
 else {
     process.on('message', function(msg) {
-        if(msg.command_set == "run"){
-            if(msg.app_name){
-                var app = require(path.resolve(__dirname + msg.local_path + msg.app_name));
+        switch(msg.command_set) {
+            case "clone":
+                git.Clone(msg.github_link, __dirname + msg.local_path).catch(function(err){
+                    console.log(err);
+                }).then(function(repo){
+                    console.log("complete!");
+                    console.log(repo);
+                });
+                break;
+
+            case "install":
+                process.chdir(msg.local_path)
+                if(msg.package_name){
+                    npm.load({}, ()=>{
+                         npm.commands.install((done)=>{
+                            console.log(__dirname);
+                            process.chdir('../');
+                            console.log(__dirname);
+                         });
+                    });
+                }
+                break;
+
+            case "run":
+                var app = require(path.resolve(__dirname + "/" + msg.local_path + msg.app_name));
                 app.runny();
                 process.send(msg);
-            }
-        }
-        if(msg.command_set == "kill"){
-            process.kill(process.pid, 'SIGHUP');
+                break;
+
+            case "kill":
+                process.kill(process.pid, 'SIGHUP');
+                break;
+
+            default:
+                break;
         }
     });
 }
+
