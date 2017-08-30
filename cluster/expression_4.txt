@@ -1,7 +1,7 @@
 {
-    "github_link":"https://github.com/madthad91/thad_linuxacademy.git", 
-    "package_name":"thad",
-    "local_path":"/thad", 
+    "github_link":"https://github.com/madthad91/panic.git", 
+    "package_name":"panic",
+    "local_path":"/panic", 
     "command_set":"clone", 
     "app_name":""
 }

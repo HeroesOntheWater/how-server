@@ -11,6 +11,18 @@ if(cluster.isMaster){
     var numCPUs = require('os').cpus().length;
     var worker_objects = {};
 
+    app.post('/start', function(req, res){
+        if(req.body["package_name"]){
+            var worker = cluster.fork();
+            worker_objects[worker.process.pid] = req.body.app_name;
+            console.log(worker_objects);
+            worker.send(req.body);
+        }
+        else{
+            res.status(400).send("Did not provide any package name");
+        }
+    })
+
     app.post('/install', function(req, res){
         if(req.body["package_name"]){
             var worker = cluster.fork();
@@ -63,6 +75,23 @@ if(cluster.isMaster){
         }
     });
 
+    app.delete('/killAll', function(req, res){
+        for(var worker in worker_objects){
+
+            delete worker_objects[req.params.pid];
+            console.log(worker_objects);
+            cluster.workers[wid].send(req.body);
+        }
+        for(var wid in cluster.workers){
+            if(cluster.workers[wid].process.pid == req.params.pid){
+                delete worker_objects[req.params.pid];
+                console.log(worker_objects);
+                cluster.workers[wid].send(req.body);
+            }
+        }
+        res.send('delete').end();
+    });
+
     app.get('/*', function(req, res) {
         res.send(worker_objects).end();
     });
@@ -95,14 +124,29 @@ else {
                 });
                 break;
 
+            case "start":
+                process.chdir(msg.local_path)
+                if(msg.package_name){
+                    npm.load({verbose:true}, ()=>{
+                         npm.commands.install((err)=>{
+                             npm.commands.update((err)=>{
+                                npm.commands.start((err)=>{
+                                    process.chdir('../');
+                                })
+                             });
+                         });
+                    });
+                }
+                break;
+
             case "install":
                 process.chdir(msg.local_path)
                 if(msg.package_name){
-                    npm.load({}, ()=>{
-                         npm.commands.install((done)=>{
-                            console.log(__dirname);
-                            process.chdir('../');
-                            console.log(__dirname);
+                    npm.load({verbose:true}, ()=>{
+                         npm.commands.install((err)=>{
+                             npm.commands.update((err)=>{
+                                process.chdir('../');
+                             });
                          });
                     });
                 }
@@ -115,6 +159,10 @@ else {
                 break;
 
             case "kill":
+                process.kill(process.pid, 'SIGHUP');
+                break;
+
+            case "killAll":
                 process.kill(process.pid, 'SIGHUP');
                 break;
 

@@ -1,7 +1,7 @@
 {
     "github_link":"", 
-    "package_name":"thad",
-    "local_path":"thad/", 
-    "command_set":"install", 
+    "package_name":"panic",
+    "local_path":"panic/", 
+    "command_set":"start", 
     "app_name":""
 }
