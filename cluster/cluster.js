@@ -76,20 +76,11 @@ if(cluster.isMaster){
     });
 
     app.delete('/killAll', function(req, res){
-        for(var worker in worker_objects){
-
-            delete worker_objects[req.params.pid];
-            console.log(worker_objects);
+        for(var wid in cluster.workers){
+            delete worker_objects[cluster.workers[wid].process.pid];
+            console.log(worker_objects)
             cluster.workers[wid].send(req.body);
         }
-        for(var wid in cluster.workers){
-            if(cluster.workers[wid].process.pid == req.params.pid){
-                delete worker_objects[req.params.pid];
-                console.log(worker_objects);
-                cluster.workers[wid].send(req.body);
-            }
-        }
-        res.send('delete').end();
     });
 
     app.get('/*', function(req, res) {

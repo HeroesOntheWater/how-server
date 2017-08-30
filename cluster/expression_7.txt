@@ -1,0 +1,6 @@
+{
+    "github_link":"", 
+    "local_path":"", 
+    "command_set":"killAll", 
+    "app_name":""
+}
