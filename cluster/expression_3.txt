@@ -1,6 +1,8 @@
 {
     "github_link":"https://github.com/kishkumen123/happ", 
-    "local_path":"/testapp", 
+    "package_name":"",
+    "dest_name":"/testapp",
+    "local_path":"testapp/", 
     "command_set":"clone", 
-    "app_name":"/testapp"
+    "app_name":"testapp"
 }

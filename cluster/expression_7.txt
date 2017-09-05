@@ -1,5 +1,7 @@
 {
     "github_link":"", 
+    "package_name":"",
+    "dest_name":"",
     "local_path":"", 
     "command_set":"killAll", 
     "app_name":""

@@ -48,6 +48,18 @@ if(cluster.isMaster){
 
     });
 
+    app.post('/clone-run', function(req, res){
+        if(req.body["github_link"]){
+            var worker = cluster.fork();
+            worker_objects[worker.process.pid] = req.body.app_name;
+            console.log(worker_objects);
+            worker.send(req.body);
+        }
+        else{
+            res.status(400).send("Did not provide any github link");
+        }
+
+    });
     app.post('/run', function(req, res){
         if(req.body.command_set == "run"){
             var worker = cluster.fork();
@@ -107,11 +119,24 @@ else {
     process.on('message', function(msg) {
         switch(msg.command_set) {
             case "clone":
-                git.Clone(msg.github_link, __dirname + msg.local_path).catch(function(err){
+                git.Clone(msg.github_link, __dirname + msg.dest_name).catch(function(err){
                     console.log(err);
                 }).then(function(repo){
                     console.log("complete!");
                     console.log(repo);
+                });
+                break;
+
+            case "clone-run":
+                git.Clone(msg.github_link, __dirname + msg.dest_name).catch(function(err){
+                    console.log(err);
+                }).then(function(repo){
+                    console.log("complete!");
+                    console.log(repo);
+
+                    var app = require(path.resolve(__dirname + "/" + msg.local_path + msg.app_name));
+                    app.runny();
+                    process.send(msg);
                 });
                 break;
 
