@@ -1,8 +1,8 @@
 {
     "github_link":"", 
     "package_name":"panic",
-    "dest_name":"",
+    "dest_name":"/panic",
     "local_path":"panic/", 
     "command_set":"start", 
-    "app_name":""
+    "app_name":"panic"
 }

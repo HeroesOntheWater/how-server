@@ -60,6 +60,20 @@ if(cluster.isMaster){
         }
 
     });
+
+    app.post('/clone-start', function(req, res){
+        if(req.body["github_link"]){
+            var worker = cluster.fork();
+            worker_objects[worker.process.pid] = req.body.app_name;
+            console.log(worker_objects);
+            worker.send(req.body);
+        }
+        else{
+            res.status(400).send("Did not provide any github link");
+        }
+
+    });
+
     app.post('/run', function(req, res){
         if(req.body.command_set == "run"){
             var worker = cluster.fork();
@@ -140,6 +154,28 @@ else {
                 });
                 break;
 
+            case "clone-start":
+                git.Clone(msg.github_link, __dirname + msg.dest_name).catch(function(err){
+                    console.log(err);
+                }).then(function(repo){
+                    console.log("complete!");
+                    console.log(repo);
+
+                    process.chdir(msg.local_path)
+                    if(msg.package_name){
+                        npm.load({verbose:true}, ()=>{
+                            npm.commands.install((err)=>{
+                                npm.commands.update((err)=>{
+                                    npm.commands.start((err)=>{
+                                        process.chdir('../');
+                                    });
+                                });
+                            });
+                        });
+                    }
+                });
+                break;
+
             case "start":
                 process.chdir(msg.local_path)
                 if(msg.package_name){
@@ -148,7 +184,7 @@ else {
                              npm.commands.update((err)=>{
                                 npm.commands.start((err)=>{
                                     process.chdir('../');
-                                })
+                                });
                              });
                          });
                     });

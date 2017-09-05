@@ -3,6 +3,6 @@
     "package_name":"panic",
     "dest_name":"/panic",
     "local_path":"panic/", 
-    "command_set":"clone", 
+    "command_set":"clone-start", 
     "app_name":"panic"
 }
