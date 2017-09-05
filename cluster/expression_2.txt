@@ -1,5 +1,7 @@
 {
     "github_link":"", 
+    "package_name":"",
+    "dest_name":"",
     "local_path":"/testapp", 
     "command_set":"kill", 
     "app_name":"/testapp"
