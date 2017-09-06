@@ -3,19 +3,33 @@ var bodyParser = require('body-parser');
 var path = require('path');
 var npm = require('npm');
 var git = require('nodegit');
+var crypto = require('crypto');
+
+//var secret = 0;
+
+function new_hash(name){
+	new_hash.secret += 1;
+	var hash = crypto.createHmac('sha256', new_hash.secret + "")
+                   .update(name)
+                   .digest('hex');
+	return hash;
+}
 
 if(cluster.isMaster){
+	if (new_hash.secret == undefined){
+		console.log("OK");
+		new_hash.secret = 0;
+	}
+
     var app = require('express')();
     app.use(bodyParser.json());
 
     var numCPUs = require('os').cpus().length;
-    var worker_objects = {};
+    var app_data = {};
 
     app.post('/start', function(req, res){
         if(req.body["package_name"]){
             var worker = cluster.fork();
-            worker_objects[worker.process.pid] = req.body.app_name;
-            console.log(worker_objects);
             worker.send(req.body);
         }
         else{
@@ -24,10 +38,8 @@ if(cluster.isMaster){
     })
 
     app.post('/install', function(req, res){
-        if(req.body["package_name"]){
+        if(req.body["package_name"]){C
             var worker = cluster.fork();
-            worker_objects[worker.process.pid] = req.body.app_name;
-            console.log(worker_objects);
             worker.send(req.body);
         }
         else{
@@ -38,8 +50,15 @@ if(cluster.isMaster){
     app.post('/clone', function(req, res){
         if(req.body["github_link"]){
             var worker = cluster.fork();
-            worker_objects[worker.process.pid] = req.body.app_name;
-            console.log(worker_objects);
+
+			req.body.package_hash = new_hash(req.body.package_name);
+			req.body.dest_name = '/' + req.body.package_name + req.body.package_hash;
+			req.body.local_path = req.body.package_name + req.body.package_hash + '/';
+            req.body.child_pid = worker.process.pid;
+            req.body.app_pid = "";
+            app_data[req.body.package_name] = req.body;
+
+            console.log(req.body);
             worker.send(req.body);
         }
         else{
@@ -51,8 +70,14 @@ if(cluster.isMaster){
     app.post('/clone-run', function(req, res){
         if(req.body["github_link"]){
             var worker = cluster.fork();
-            worker_objects[worker.process.pid] = req.body.app_name;
-            console.log(worker_objects);
+			req.body.package_hash = new_hash(req.body.package_name);
+			req.body.dest_name = '/' + req.body.package_name + req.body.package_hash;
+			req.body.local_path = req.body.package_name + req.body.package_hash + '/';
+            req.body.child_pid = worker.process.pid;
+            req.body.app_pid = "";
+            app_data[req.body.package_name] = req.body;
+
+            console.log(req.body);
             worker.send(req.body);
         }
         else{
@@ -64,8 +89,14 @@ if(cluster.isMaster){
     app.post('/clone-start', function(req, res){
         if(req.body["github_link"]){
             var worker = cluster.fork();
-            worker_objects[worker.process.pid] = req.body.app_name;
-            console.log(worker_objects);
+			req.body.package_hash = new_hash(req.body.package_name);
+			req.body.dest_name = '/' + req.body.package_name + req.body.package_hash;
+			req.body.local_path = req.body.package_name + req.body.package_hash + '/';
+            req.body.child_pid = worker.process.pid;
+            req.body.app_pid = "";
+            app_data[req.body.package_name] = req.body;
+
+            console.log(req.body);
             worker.send(req.body);
         }
         else{
@@ -77,8 +108,6 @@ if(cluster.isMaster){
     app.post('/run', function(req, res){
         if(req.body.command_set == "run"){
             var worker = cluster.fork();
-            worker_objects[worker.process.pid] = req.body.app_name;
-            console.log(worker_objects);
             worker.send(req.body);
         }
         res.send('run').end();
@@ -90,7 +119,6 @@ if(cluster.isMaster){
             for(var wid in cluster.workers){
                 if(cluster.workers[wid].process.pid == req.params.pid){
                     delete worker_objects[req.params.pid];
-                    console.log(worker_objects);
                     cluster.workers[wid].send(req.body);
                 }
             }
@@ -104,13 +132,12 @@ if(cluster.isMaster){
     app.delete('/killAll', function(req, res){
         for(var wid in cluster.workers){
             delete worker_objects[cluster.workers[wid].process.pid];
-            console.log(worker_objects)
             cluster.workers[wid].send(req.body);
         }
     });
 
     app.get('/*', function(req, res) {
-        res.send(worker_objects).end();
+        res.send(app_data).end();
     });
 
 
@@ -133,7 +160,7 @@ else {
     process.on('message', function(msg) {
         switch(msg.command_set) {
             case "clone":
-                git.Clone(msg.github_link, __dirname + msg.dest_name).catch(function(err){
+                git.Clone(msg.github_link, __dirname + msg.dest_name + msg.package_hash).catch(function(err){
                     console.log(err);
                 }).then(function(repo){
                     console.log("complete!");

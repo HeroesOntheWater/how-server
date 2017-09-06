@@ -1,9 +1,8 @@
 {
     "github_link":"", 
     "package_name":"",
-    "package_hash":"",
     "dest_name":"",
-    "local_path":"/testapp", 
+    "local_path":"/panic", 
     "command_set":"kill", 
-    "app_name":"testapp"
+    "app_name":"panic"
 }
