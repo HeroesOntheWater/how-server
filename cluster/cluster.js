@@ -52,7 +52,7 @@ if(cluster.isMaster){
 			req.body.local_path = req.body.package_name + req.body.package_hash + '/';
             req.body.child_pid = worker.process.pid;
             req.body.app_pid = "";
-            app_data[req.body.package_name] = req.body;
+            app_data[req.body.package_hash] = req.body;
 
             console.log(app_data);
             worker.send(req.body);
@@ -71,7 +71,7 @@ if(cluster.isMaster){
 			req.body.local_path = req.body.package_name + req.body.package_hash + '/';
             req.body.child_pid = worker.process.pid;
             req.body.app_pid = "";
-            app_data[req.body.package_name] = req.body;
+            app_data[req.body.package_hash] = req.body;
 
             console.log(req.body);
             console.log(app_data);
@@ -91,7 +91,7 @@ if(cluster.isMaster){
 			req.body.local_path = req.body.package_name + req.body.package_hash + '/';
             req.body.child_pid = worker.process.pid;
             req.body.app_pid = "";
-            app_data[req.body.package_name] = req.body;
+            app_data[req.body.package_hash] = req.body;
 
             console.log(req.body);
             console.log(app_data);
@@ -137,9 +137,8 @@ if(cluster.isMaster){
 
     app.delete('/rmDirAll', function(req, res){
         if(req.body.command_set == 'rmDirAll'){
-            for(var name in app_data.package_name){
-                console.log(name)
-                rmrf(name, function() { console.log('done') })
+            for(var name in app_data){
+                rmrf(app_data[name].dest_name, function() { console.log('done') })
             }
         }
 
