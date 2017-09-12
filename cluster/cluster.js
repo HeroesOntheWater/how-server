@@ -4,11 +4,12 @@ var path = require('path');
 var npm = require('npm');
 var git = require('nodegit');
 var crypto = require('crypto');
+var rmrf = require('rimraf');
 
 //var secret = 0;
 
 function new_hash(name){
-	new_hash.secret += 1;
+	new_hash.secret = Math.random() * 1000000000;
 	var hash = crypto.createHmac('sha256', new_hash.secret + "")
                    .update(name)
                    .digest('hex');
@@ -16,11 +17,6 @@ function new_hash(name){
 }
 
 if(cluster.isMaster){
-	if (new_hash.secret == undefined){
-		console.log("OK");
-		new_hash.secret = 0;
-	}
-
     var app = require('express')();
     app.use(bodyParser.json());
 
@@ -58,7 +54,7 @@ if(cluster.isMaster){
             req.body.app_pid = "";
             app_data[req.body.package_name] = req.body;
 
-            console.log(req.body);
+            console.log(app_data);
             worker.send(req.body);
         }
         else{
@@ -78,6 +74,7 @@ if(cluster.isMaster){
             app_data[req.body.package_name] = req.body;
 
             console.log(req.body);
+            console.log(app_data);
             worker.send(req.body);
         }
         else{
@@ -97,6 +94,7 @@ if(cluster.isMaster){
             app_data[req.body.package_name] = req.body;
 
             console.log(req.body);
+            console.log(app_data);
             worker.send(req.body);
         }
         else{
@@ -113,12 +111,11 @@ if(cluster.isMaster){
         res.send('run').end();
     });
 
-
     app.delete('/kill/:pid', function(req, res){
         if(req.params["pid"]){
             for(var wid in cluster.workers){
                 if(cluster.workers[wid].process.pid == req.params.pid){
-                    delete worker_objects[req.params.pid];
+                    delete app_data[req.params.pid];
                     cluster.workers[wid].send(req.body);
                 }
             }
@@ -130,10 +127,38 @@ if(cluster.isMaster){
     });
 
     app.delete('/killAll', function(req, res){
-        for(var wid in cluster.workers){
-            delete worker_objects[cluster.workers[wid].process.pid];
-            cluster.workers[wid].send(req.body);
+        if(req.body.command_set == 'killAll'){
+            for(var wid in cluster.workers){
+                delete app_data[cluster.workers[wid].process.pid];
+                cluster.workers[wid].send(req.body);
+            }
         }
+    });
+
+    app.delete('/rmDirAll', function(req, res){
+        if(req.body.command_set == 'rmDirAll'){
+            for(var name in app_data.package_name){
+                console.log(name)
+                rmrf(name, function() { console.log('done') })
+            }
+        }
+
+        console.log(req.body);
+        console.log(app_data);
+    });
+
+    app.delete('/rmDir/:dirName', function(req, res){
+        if(req.body.command_set == 'rmDir'){
+            for(var name in app_data.package_name){
+                if(name == req.params.dirName){
+                    console.log(name)
+                    rmrf(name, function() { console.log('done') })
+                }
+            }
+        }
+
+        console.log(req.body);
+        console.log(app_data);
     });
 
     app.get('/*', function(req, res) {
